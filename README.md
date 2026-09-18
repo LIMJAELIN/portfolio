@@ -27,6 +27,8 @@ Java/Spring 기반 B2B ERP에서 인사·근태·급여 업무를 개발하고 �
 - Spring Scheduler 기반 배치에서 처리 단위를 `REQUIRES_NEW` 트랜잭션으로 분리해 개별 실패가 전체 작업을 중단시키지 않도록 구성
 - 성공/실패를 독립적으로 관리하고 기존 집계 데이터 때문에 재처리 대상이 누락되던 조건 보완
 
+[→ ERP Batch 상세 Case Study](case-studies/erp-batch.md)
+
 **Other Experience**  
 외부 전자계약 REST API 6종 연계, 외부 ID·상태·PDF 처리, 휴가·출장·연장근무 통합 API의 애플리케이션·MyBatis·JDBC 구간별 성능 병목 진단
 
