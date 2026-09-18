@@ -3,7 +3,7 @@
 Java/Spring 기반 B2B ERP에서 인사·근태·급여 업무를 개발하고 있습니다.  
 복잡한 업무 규칙, 데이터 정합성, 외부 시스템 연동, 트랜잭션·배치 처리 경험을 쌓았고, 개인 프로젝트에서는 PostgreSQL·Docker·AWS 기반 시스템을 직접 구축·배포·운영했습니다.
 
-> 회사 프로젝트는 보안상 소스코드와 내부 자료를 공개하지 않습니다. 아래 내용은 외부 공개 가능한 범위에서 문제, 판단, 구현 구조와 검증 경험을 정리한 것입니다.
+> ※ 회사 경험은 외부 공개 가능한 범위에서 기술적 문제와 해결 과정을 정리했습니다.
 
 ---
 
@@ -39,7 +39,7 @@ Java/Spring 기반 B2B ERP에서 인사·근태·급여 업무를 개발하고 �
 
 ### Stock-manager — Personal Project
 
-금융 데이터 수집·분석 및 트레이딩 시스템  
+금융 데이터 수집·분석부터 자동매매 실행과 전략 검증까지 확장한 장기 개인 프로젝트  
 `Python` `PostgreSQL` `Docker` `AWS ECS/Fargate` `ECR` `RDS` `SSM` `CloudWatch` `GitHub Actions` `pytest`
 
 ```mermaid
@@ -53,24 +53,39 @@ flowchart LR
     ECS --> CW[CloudWatch Logs]
 ```
 
-**Prototype → Cloud Runtime**
-- Windows 기반 분석 프로토타입을 KIS API 기반 runtime으로 재설계
-- Docker·PostgreSQL 기반 실행환경을 AWS ECS/Fargate·ECR·RDS로 이전
-- GitHub Actions 기반 테스트·빌드·배포 흐름 구성
+#### 1. Architecture Evolution
+- Windows 기반의 작은 주식 분석 프로토타입에서 시작해 데이터 수집, 판단, 주문, 리스크 관리와 상태 관리가 분리된 실행 시스템으로 확장
+- 로컬 실행환경을 Docker·PostgreSQL 기반으로 전환하고 AWS ECS/Fargate·ECR·RDS에 배포
+- GitHub Actions를 이용해 테스트, 이미지 빌드, 배포 및 서비스 안정화 확인까지 이어지는 CI/CD 흐름 구성
 
-**Deployment Incident**
-- ECS Task 기동 실패를 Service Event와 컨테이너 로그로 추적
-- 애플리케이션 초기화 단계의 오류 원인을 수정하고 회귀 테스트와 배포 검증 보강
+#### 2. Troubleshooting & Operational Reliability
 
-**Database Concurrency**
-- PostgreSQL 운영 중 발생한 deadlock과 lock timeout을 구분
-- SQLSTATE 기반 오류 식별, rollback 후 제한 재시도와 안전한 실패 처리 적용
+**ECS 배포 후 Task 기동 실패**
+- ECS Service Event와 컨테이너 로그를 기준으로 실패 구간 추적
+- 애플리케이션 초기화 과정의 constructor 인자 불일치를 원인으로 특정
+- 코드 수정 후 회귀 테스트와 재배포 검증을 진행하고 배포 전 검증 항목 보강
 
-**Time-series Verification**
-- Point-in-Time / no-lookahead 원칙을 반영한 검증 흐름 구성
-- replay / ghost 방식으로 시계열 처리 결과 검증
+**PostgreSQL 동시성 문제**
+- 운영 중 발생한 deadlock과 lock timeout을 같은 오류로 취급하지 않고 원인별로 구분
+- 실패 트랜잭션 rollback 후 제한 재시도 적용
+- 반복 실패 시 무한 재시도 대신 안전하게 중단하거나 대체 흐름으로 전환하도록 처리
 
-> Private repository. 실제 운영 구조와 기술적 의사결정은 면접에서 설명 가능합니다.
+**DB 전환 과정의 호환성 문제**
+- 로컬 환경에서 사용하던 SQL·datetime 처리 방식이 PostgreSQL에서 동일하게 동작하지 않는 문제 확인
+- DB별 차이를 분리해 수정하고 전환 이후 동작을 다시 검증
+
+#### 3. Financial Domain & Evaluation Engineering
+- 실제 운용 전에 과거 데이터로 전략을 검증해야 하는 이유와, 백테스트 결과 자체도 잘못된 데이터 기준 때문에 과대평가될 수 있다는 점을 프로젝트를 진행하며 체계화
+- 과거 시점의 판단에는 **그 당시 실제로 알 수 있었던 정보만 사용**하도록 데이터 시점을 구분해 미래 정보가 평가에 섞이는 문제를 방지
+- 단순히 데이터가 존재한다는 이유만으로 성과를 계산하지 않고, 데이터 시점·보유기간·체결 기준 등 평가 조건이 명확한지 별도로 확인
+- 전략 자체의 실패와 평가 방식의 오류를 구분하기 위해 시뮬레이션·리플레이 검증 흐름을 분리하고, 검증 조건이 부족하면 성과 결론을 내리지 않도록 구성
+
+#### 4. Decision & Trade-off
+- 운영 안정성을 높이기 위해 안전장치와 검증 조건을 늘리는 과정에서, 지나친 제약이 정상적인 처리와 실험까지 막을 수 있다는 문제를 경험
+- 반대로 과거 데이터에 지나치게 맞춘 조건은 실제 운용 성능을 보장하지 않는다는 점을 고려해 검증 결과에 따라 일부 조건을 완화하거나 단순화
+- 기능과 규칙을 계속 추가하기보다 **결과를 신뢰할 수 있는가, 실패했을 때 복구 가능한가**를 기준으로 구조를 다시 판단
+
+이 프로젝트를 통해 기능 구현뿐 아니라 **운영 장애 대응, 금융 데이터의 시간적 의미, 전략 검증의 신뢰성, 안정성과 복잡성 사이의 trade-off**를 함께 다뤘습니다.
 
 ---
 
@@ -125,6 +140,7 @@ FastAPI·PostgreSQL 기반 금융 데이터 플랫폼
 
 - 구현 자체보다 문제 정의, 데이터 정합성, 트랜잭션 경계와 실패 시나리오를 먼저 확인합니다.
 - 장애·성능 문제는 추측보다 로그와 구간별 측정을 통해 원인을 좁혀갑니다.
+- 결과가 좋아 보이는 것과 실제로 신뢰할 수 있는 결과인지를 구분하고, 검증 기준이 부족하면 결론을 서두르지 않습니다.
 - AI Agent를 구현·리팩터링·테스트 보조에 활용하되, 설계 판단과 코드 diff·테스트·로그 기반 검증 및 최종 품질 책임은 직접 수행합니다.
 
 ---
