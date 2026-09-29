@@ -1,0 +1,166 @@
+---
+import SiteLayout from '../../layouts/SiteLayout.astro';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
+<SiteLayout
+  title="Stock-manager Logic Deep Dive | 임재린"
+  description="Stock-manager에서 미래정보 누수와 평가 기준 불일치를 막고, 입력 근거가 부족하면 이미 나온 결과까지 폐기한 과정을 정리한 심화 사례입니다."
+>
+  <header class="case-hero">
+    <div class="shell">
+      <div class="breadcrumb"><a href={`${base}/cases/stock-manager-production/`}>Case 05</a> &nbsp;/&nbsp; 전략·평가 로직</div>
+      <div class="case-hero-grid">
+        <div>
+          <p class="eyebrow">Deep Dive · 평가 로직 / 데이터 정합성</p>
+          <h1>전략 결과를 어디까지 믿어도 되는가</h1>
+          <p class="case-lead">
+            Stock-manager에서 가장 오래 남은 문제는 전략 자체보다
+            “이 결과를 계산해도 되는 데이터와 평가 환경인가?”였습니다.
+          </p>
+          <div class="case-metric">과거시점 재현 · 평가 기준 검증 · 조건 미충족 시 중단</div>
+        </div>
+
+        <dl class="case-facts">
+          <div><dt>Project</dt><dd>Stock-manager</dd></div>
+          <div><dt>Focus</dt><dd>평가 결과의 신뢰성</dd></div>
+          <div><dt>Data</dt><dd>시간 · 시장 데이터</dd></div>
+          <div><dt>Approach</dt><dd>조건 미충족 시 계산 중단</dd></div>
+        </dl>
+      </div>
+    </div>
+  </header>
+
+  <article class="case-body">
+    <section class="case-section">
+      <h2>01. 좋은 숫자가 나와도 먼저 의심했습니다</h2>
+      <p>
+        초기에는 전략 조건을 만들고 과거 데이터에서 결과를 확인하는 일이 중심이었습니다.
+        하지만 과거 시점의 의사결정을 재현하려면 당시 실제로 알 수 있었던 데이터, 실행 시점, 평가 대상 종목 범위, 보유기간까지 함께 맞아야 했습니다.
+      </p>
+      <p>
+        그래서 평가 구조를 “수익률을 계산하는 코드”보다 <strong>그 계산을 해도 되는 상태인지 먼저 확인하는 코드</strong> 쪽으로 점점 옮겼습니다.
+      </p>
+    </section>
+
+    <section class="case-section">
+      <h2>02. 미래 데이터를 입력에서 아예 분리했습니다</h2>
+      <p>
+        81개 거래일을 준비 구간 20일, 분석 구간 41일, 테스트 구간 10일, 최종 검증 구간 10일로 고정했습니다.
+        전략 신호를 계산할 때는 앞의 준비·분석 구간만 입력으로 사용하도록 분리했습니다.
+      </p>
+      <div class="flow" aria-label="평가 구간 분리">
+        <div class="flow-step">준비 20</div>
+        <div class="flow-step emphasis">분석 41</div>
+        <div class="flow-step">테스트 10</div>
+        <div class="flow-step">최종 검증 10</div>
+      </div>
+      <p>
+        중요한 건 구간 이름보다 검증 방식이었습니다.
+        테스트·최종 검증 구간의 시가·고가·저가·종가·거래량을 극단적인 값으로 바꿔도 앞선 분석 결과와 산출물 해시가 그대로여야 하는 회귀 테스트를 두었습니다.
+        “미래정보를 쓰지 않았다”고 선언하는 대신, <strong>미래 영역을 바꿔도 과거 결과가 변하지 않는지</strong>를 확인한 것입니다.
+      </p>
+      <div class="evidence-panel" aria-label="미래 데이터 격리 회귀 테스트 발췌">
+        <pre><code>{`def test_test_holdout_ohlcv_mutations_cannot_change_train_report():
+    # 기준 결과 생성 — 전략 입력은 준비/분석 구간까지만 사용
+    artifact, provenance = load_pr175_price_artifact()
+    baseline = build_train_report(artifact["rows"], ...)
+    mutated = copy.deepcopy(artifact["rows"])
+
+    # 아직 열지 않은 TEST/HOLDOUT 구간만 강제로 변조
+    unopened = set(baseline["split"]["TEST"] + baseline["split"]["HOLDOUT"])
+    for row in mutated:
+        if row["session_date"] in unopened and row.get("classification") == "usable":
+            row["numeric_ohlcv"]["TDD_CLSPRC"] = "999999999"
+            row["numeric_ohlcv"]["TDD_HGPRC"] = "1000000000"
+            row["numeric_ohlcv"]["ACC_TRDVOL"] = "1"
+
+    changed = build_train_report(mutated, ...)
+
+    # 미래 구간을 바꿔도 앞선 분석 결과와 산출물은 동일해야 함
+    assert changed == baseline
+    assert changed["artifact_digest"] == baseline["artifact_digest"]`}</code></pre>
+      </div>
+    </section>
+
+    <section class="case-section">
+      <h2>03. 데이터가 있어도 평가할 수 없는 경우가 있었습니다</h2>
+      <p>
+        결과를 계산하기 전에 가격 데이터의 정밀도, 전략 보유기간, 평가 대상 범위, 당시 정보 이용 가능 여부, 체결 가정, 포지션 기록 방식이 서로 맞는지 확인했습니다.
+        중요한 기준이 맞지 않으면 결과를 억지로 만들지 않고 <strong>평가 준비 안 됨</strong> 상태로 중단했습니다.
+      </p>
+      <div class="two-column">
+        <div class="note-box success">
+          <h3>평가 가능한 경우</h3>
+          <ul>
+            <li>전략 보유기간과 포지션 기록 방식이 일치</li>
+            <li>가격 데이터 정밀도가 체결 가정을 뒷받침</li>
+            <li>당시 실제로 이용 가능했던 데이터만 사용</li>
+          </ul>
+        </div>
+        <div class="note-box warning">
+          <h3>평가를 막는 경우</h3>
+          <ul>
+            <li>30분 전략을 일봉 기준 기록으로 평가</li>
+            <li>5분 데이터로 1분·틱 수준 체결을 재현했다고 판단</li>
+            <li>며칠 보유하는 전략을 당일 가상매매 결과만으로 판단</li>
+          </ul>
+        </div>
+      </div>
+      <p>
+        데이터가 많이 쌓였다는 이유만으로 서로 다른 전략을 같은 기준으로 비교하지 않도록 한 것입니다.
+      </p>
+    </section>
+
+    <section class="case-section">
+      <h2>04. 이미 나온 결과도 버렸습니다</h2>
+      <p>
+        분석 구간과 입력 규칙을 고정하고 실제 평가를 실행한 뒤, 입력 구간을 분리하는 로직에 문제가 있다는 걸 발견했습니다.
+        이미 계산된 결과를 참고용으로 남기지 않고 <strong>전체 결과를 무효 처리</strong>했습니다.
+      </p>
+      <p>
+        수정 후 다시 실행했지만 이번에는 청산 여부를 확정할 수 없는 포지션이 많이 남았습니다.
+        1,108건을 따로 점검하면서 “중간 평가값이 없는 포지션”과 “실제 청산 근거 자체가 없는 포지션”이 같은 상태로 취급되는 문제를 찾아냈습니다.
+      </p>
+      <div class="flow" aria-label="평가 오류 수정 흐름">
+        <div class="flow-step">초기 평가 실행</div>
+        <div class="flow-step emphasis">결과 무효 처리</div>
+        <div class="flow-step">수정 후 재실행</div>
+        <div class="flow-step">1,108건 별도 점검</div>
+        <div class="flow-step">포지션 상태 흐름 수정</div>
+      </div>
+      <p>
+        포지션 상태 처리 문제를 고친 뒤에도 남은 데이터 불확실성 때문에 성과 결론은 계속 막아뒀습니다.
+        좋은 결과를 만드는 것보다 <strong>근거가 틀렸다면 좋은 결과도 버리는 것</strong>을 우선했습니다.
+      </p>
+    </section>
+
+    <section class="case-section">
+      <h2>05. 외부 데이터 형식도 추측해서 맞추지 않았습니다</h2>
+      <p>
+        과거시점 재현용 데이터를 확보하는 과정에서도 처음부터 잘 풀리진 않았습니다.
+        초기 외부 데이터 제공처 검증에서는 162번 요청했지만 실제 평가에 사용할 수 있는 가격 데이터가 한 건도 나오지 않았고, 원인은 안정적으로 사용할 종목 식별자를 찾지 못한 것이었습니다.
+      </p>
+      <p>
+        필드명을 추측해 파서를 맞추는 대신 실제 응답을 다시 확인해 종목 식별자의 의미를 확인했습니다.
+        명확히 대상이 아닌 값은 제외하되, 애매한 값을 임의로 정상 종목 코드로 고치지 않도록 했고, 이 조건을 회귀 테스트로 남긴 뒤 제한된 범위의 과거 데이터 수집으로 넘어갔습니다.
+      </p>
+      <p>
+        실시간 데이터에서도 외부 제공처가 의미 있는 발생 시각을 줄 때만 <code>source_ts</code>를 만들고,
+        시스템이 실제로 그 데이터를 받은 시각은 <code>observed_at</code>으로 따로 남겼습니다.
+        “지금 읽었다”는 이유로 오래된 데이터를 새 데이터처럼 만들지 않기 위한 구분이었습니다.
+      </p>
+    </section>
+
+    <section class="case-section">
+      <div class="result-panel">
+        <strong>데이터가 존재한다고 해서 유효한 의사결정 데이터인 것은 아니다</strong>
+        <p>
+          시간, 포지션 상태 흐름, 체결 기준, 데이터 출처가 맞지 않으면 다음 계산으로 넘기지 않았습니다.
+          조건이 부족하면 잘못된 숫자를 만드는 대신 평가를 보류하고, 이미 나온 결과라도 근거가 깨지면 폐기하는 방향으로 구조를 바꿨습니다.
+        </p>
+      </div>
+    </section>
+  </article>
+</SiteLayout>

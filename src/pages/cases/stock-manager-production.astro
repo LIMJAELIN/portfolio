@@ -1,0 +1,169 @@
+---
+import SiteLayout from '../../layouts/SiteLayout.astro';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
+<SiteLayout
+  title="자동매매 프로토타입을 운영 가능한 시스템으로 확장 | 임재린"
+  description="작은 금융 분석 프로토타입을 상태를 가진 실행 시스템으로 확장하고, PostgreSQL·AWS 운영 장애와 주문 상태 정합성, 배포 안전장치를 보완한 사례입니다."
+>
+  <header class="case-hero">
+    <div class="shell">
+      <div class="breadcrumb"><a href={`${base}/#cases`}>Cases</a> &nbsp;/&nbsp; 05. 자동매매 프로토타입을 운영 가능한 시스템으로 확장</div>
+      <div class="case-hero-grid">
+        <div>
+          <p class="eyebrow">Case 05 · Personal Project · System / Operations</p>
+          <h1>자동매매 프로토타입을 운영 가능한 시스템으로 확장</h1>
+          <p class="case-lead">
+            작은 금융 분석 도구에서 시작한 Stock-manager를 주문·리스크·상태를 분리한 실행 시스템으로 확장했습니다.
+            Docker/AWS 배포 자체보다, 실제 장애와 실패조건을 만나면서 상태와 복구 기준을 계속 보완한 과정에 초점을 맞췄습니다.
+          </p>
+        </div>
+
+        <dl class="case-facts">
+          <div><dt>Type</dt><dd>Personal Project</dd></div>
+          <div><dt>Focus</dt><dd>Runtime / Operations</dd></div>
+          <div><dt>Runtime</dt><dd>Python / Docker</dd></div>
+          <div><dt>Infra</dt><dd>AWS ECS / RDS</dd></div>
+        </dl>
+      </div>
+    </div>
+  </header>
+
+  <article class="case-body">
+    <section class="case-section">
+      <h2>01. 분석 도구에서 상태를 가진 실행 시스템으로</h2>
+      <p>
+        처음에는 Windows 로컬에서 주식 데이터와 뉴스를 수집하고 분석 결과를 확인하는 정도였습니다.
+        주문 실행까지 범위가 넓어지면서 시장 시간, 리스크, 주문 상태, 재기동, 장애 확인처럼 단발성 스크립트로는 넘기기 어려운 문제가 생겼습니다.
+      </p>
+      <div class="flow" aria-label="Stock-manager 진화 흐름">
+        <div class="flow-step">분석 프로토타입</div>
+        <div class="flow-step">주문 실행</div>
+        <div class="flow-step">리스크 / 상태</div>
+        <div class="flow-step emphasis">운영</div>
+        <div class="flow-step">검증</div>
+      </div>
+      <p>
+        애플리케이션은 Docker/ECS/Fargate에서 실행하고 데이터는 RDS PostgreSQL에 저장했습니다.
+        GitHub Actions로 테스트·이미지 빌드·ECR push·ECS 배포까지 이어지도록 구성했습니다.
+      </p>
+    </section>
+
+    <section class="case-section">
+      <h2>02. ECS Task가 뜨지 않았던 날</h2>
+      <p>
+        새 배포에서 ECS Task가 반복 종료되며 배포가 롤백됐습니다.
+        ECS Service Event에서 Task 기동 실패를 확인한 뒤 컨테이너 로그까지 내려가,
+        <strong>TradingRuntime이 넘기는 신규 인자와 RiskManager 생성자 정의가 맞지 않는 것</strong>을 원인으로 특정했습니다.
+      </p>
+      <div class="flow" aria-label="ECS 장애 진단 흐름">
+        <div class="flow-step">배포</div>
+        <div class="flow-step">Task 기동 실패</div>
+        <div class="flow-step">컨테이너 로그</div>
+        <div class="flow-step emphasis">생성자 불일치</div>
+        <div class="flow-step">회귀 테스트 · 재배포</div>
+      </div>
+      <p>
+        생성자 정의를 맞추고 관련 리스크 동작을 회귀 테스트로 보강했습니다.
+        배포 절차가 끝난 것과 애플리케이션이 정상 기동한 것은 다른 상태라는 걸 실제 장애로 확인한 사례였습니다.
+      </p>
+      <div class="evidence-panel" aria-label="ECS 장애 변경 기록 발췌">
+        <pre><code>{`# 장애 확인
+ECS Service Event: deployment failed: tasks failed to start → rollback
+
+# 원인
+TypeError: RiskManager.__init__() got an unexpected keyword argument
+'consecutive_loss_halt_requires_negative_day'
+
+# 수정 후 회귀 테스트
+pytest tests/test_risk_manager_daily_loss.py
+→ 6 passed
+
+pytest tests/test_runtime_entry_guard.py -k "risk or guard or halt"
+→ 176 passed`}</code></pre>
+      </div>
+    </section>
+
+    <section class="case-section">
+      <h2>03. PostgreSQL deadlock — 재시도보다 원인을 없애기</h2>
+      <p>
+        PostgreSQL 전환 뒤 deadlock과 lock timeout을 구분해 롤백 후 제한적으로 재시도하는 방어를 넣었지만,
+        이후 dashboard snapshot 조회에서 실제 <strong>DeadlockDetected</strong>가 다시 발생했습니다.
+      </p>
+      <p>
+        호출 흐름을 따라가 보니 조회 경로에서 DatabaseManager를 만들 때 schema initialization이 함께 실행되고 있었고,
+        읽기 요청이 <code>CREATE INDEX IF NOT EXISTS</code> 같은 DDL lock까지 잡을 수 있는 구조였습니다.
+      </p>
+      <p>
+        그래서 재시도 횟수를 늘리는 대신 schema 변경 책임을 조회 경로에서 분리했습니다.
+        PostgreSQL dashboard 조회에서는 schema initialization을 끄고, 이 동작이 유지되는 회귀 테스트를 추가했습니다.
+      </p>
+    </section>
+
+    <section class="case-section">
+      <h2>04. 주문 상태의 기준을 프로세스 메모리 밖으로</h2>
+      <p>
+        주문 실행 경로의 안전성을 검토하면서 주문 API 응답 유실, 부분 체결 뒤 재기동, 늦게 들어오는 체결,
+        두 실행 프로세스의 동시 접근처럼 단순 request/response만으로는 안전하게 처리하기 어려운 조건을 다뤘습니다.
+      </p>
+      <div class="two-column">
+        <div class="note-box success">
+          <h3>주문 상태 관리</h3>
+          <ul>
+            <li>활성 주문 상태를 DB에 저장</li>
+            <li>증권사 주문 상태와 다시 동기화</li>
+            <li>누적 체결량 기준으로 중복 반영 방지</li>
+            <li>부분 체결 후 잔여 주문 상태 유지</li>
+          </ul>
+        </div>
+        <div class="note-box warning">
+          <h3>동시 실행 방어</h3>
+          <ul>
+            <li>실행권 lease와 heartbeat</li>
+            <li>실행 주체와 fencing token 확인</li>
+            <li>이전 실행 주체의 상태 변경 차단</li>
+            <li>상태 재동기화 실패 시 주문 실행 중단</li>
+          </ul>
+        </div>
+      </div>
+      <p>
+        핵심은 “주문 요청을 보냈다”가 아니라 <strong>프로세스가 죽거나 응답을 잃어도 증권사 상태와 로컬 상태를 다시 맞출 수 있는가</strong>였습니다.
+        응답 유실, 재기동, 부분 체결, 늦게 들어오는 체결 같은 실패조건은 테스트로 재현했습니다.
+      </p>
+    </section>
+
+    <section class="case-section">
+      <h2>05. 자동화에도 우회 경로가 있었습니다</h2>
+      <p>
+        테스트가 존재하는 것과 모든 운영 배포가 그 테스트를 반드시 거치는 것은 달랐습니다.
+        GitHub Actions의 <code>paths:</code> 조건 때문에 필수 검사가 아예 생성되지 않을 수 있는 경로를 확인하고,
+        운영 배포 전 검증을 재사용 가능한 단계로 모았습니다.
+      </p>
+      <p>
+        운영 배포는 이 검증 단계와 별도 검사, 명시적인 배포 승인 조건을 모두 만족해야 진행하도록 연결했고,
+        테스트 코드에서 워크플로 연결 자체도 확인하도록 했습니다.
+      </p>
+    </section>
+
+    <section class="case-section">
+      <h2>06. 전략 결과도 시스템의 출력으로 봤습니다</h2>
+      <p>
+        프로젝트 후반에는 “전략 결과가 나왔다”와 “그 결과를 믿어도 된다”를 분리했습니다.
+        데이터 시점, 보유기간, 실행 기준, 평가 원장이 맞지 않으면 성과 계산 자체를 막고,
+        이미 계산한 결과라도 입력 근거에 문제가 발견되면 폐기하는 방향으로 평가 구조를 발전시켰습니다.
+      </p>
+      <div class="hero-actions">
+        <a class="button button-secondary" href={`${base}/cases/stock-manager-logic/`}>전략·평가 로직 자세히 보기 →</a>
+      </div>
+    </section>
+
+    <section class="case-section">
+      <div class="result-panel">
+        <strong>프로토타입 → 실행 시스템 → 운영 → 검증</strong>
+        <p>자동매매 기능의 수보다, 실패했을 때 상태와 판단 근거가 망가지지 않도록 구조를 계속 수정한 과정이 이 프로젝트에서 가장 큰 개발 경험이었습니다.</p>
+      </div>
+    </section>
+  </article>
+</SiteLayout>

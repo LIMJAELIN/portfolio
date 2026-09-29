@@ -1,0 +1,93 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const cases = [
+  { index:'01', meta:'Performance · Production', title:'사원등록 초기 로딩 성능 개선', description:'가족·학력·경력·자격·발령·휴직 등 10개가 넘는 하위 탭을 가진 화면에서, 최초 진입에 필요하지 않은 초기화와 조회를 실제 사용 시점으로 지연했습니다.', result:'초기 경로 단순화 · 지연 로딩', href:`${base}/cases/employee-loading-performance/`, featured:true },
+  { index:'02', meta:'Business Logic · Production', title:'복잡한 근무정책을 일자별 근무계획으로 변환', description:'근무유형마다 다른 시간·교대 규칙과 여러 휴게시간 입력 경로를 하나의 생성 흐름에서 처리하고, 자정 경계·비근무일 같은 예외조건을 보완했습니다.', result:'정책 계산 · 날짜 경계 · 예외 처리', href:`${base}/cases/work-schedule-policy/` },
+  { index:'03', meta:'Transaction · Batch · Production', title:'재집계 배치의 대상 선별과 부분 실패 격리', description:'원천 데이터 변경 여부로 재집계 대상을 선별하고, 처리 단위별 트랜잭션과 성공·실패 집계로 한 건의 오류가 전체 배치로 번지지 않도록 구성했습니다.', result:'대상 선별 · 독립 처리 · 실패 집계', href:`${base}/cases/batch-partial-failure/` },
+  { index:'04', meta:'Spring · Database · Production', title:'Multi DataSource Routing', description:'3개 DB 환경을 요청 컨텍스트에 따라 동적으로 선택하고, routing key와 transaction, 실제 Connection 획득 시점의 관계까지 고려해 구성했습니다.', result:'3개 DB 환경 · 동적 라우팅', href:`${base}/cases/multi-datasource-routing/` },
+  { index:'05', meta:'Personal Project · System · Operations', title:'자동매매 프로토타입을 운영 가능한 시스템으로 확장', description:'분석 프로토타입을 주문·리스크·상태가 분리된 실행 시스템으로 확장하고, AWS 운영 중 실제 ECS 기동 실패와 PostgreSQL 동시성 문제를 진단·보완했습니다.', result:'프로토타입 → 실행 → 운영 → 검증', href:`${base}/cases/stock-manager-production/`, wide:true },
+];
+---
+
+<SiteLayout>
+  <section class="hero"><div class="shell"><div class="hero-copy">
+    <p class="eyebrow">Backend Developer Portfolio</p>
+    <h1>임재린</h1>
+    <p class="hero-role">Java / Spring Backend Developer</p>
+    <p class="hero-description">Java/Spring 기반 B2B ERP에서 인사·근태·급여 업무를 담당하며, 업무 단위로 화면부터 API·DB·배치까지 구현하고 있습니다.<br />업무 규칙과 데이터 정합성, 성능·배치·외부 연동에서 생기는 문제를 화면과 서버 흐름을 같이 보며 해결해왔습니다.</p>
+    <div class="chips" aria-label="주요 기술">{['Java','Spring Boot','MyBatis','Oracle','PostgreSQL'].map((item) => <span class="chip">{item}</span>)}</div>
+    <div class="hero-actions"><a class="button button-primary" href="#cases">주요 사례 보기 →</a><a class="button button-secondary" href="https://github.com/LIMJAELIN" target="_blank" rel="noreferrer">GitHub ↗</a></div>
+  </div></div></section>
+
+  <section class="section" id="cases"><div class="shell">
+    <div class="section-heading"><div><h2>Selected Engineering Cases</h2></div></div>
+    <div class="case-grid">{cases.map((item) => (
+      <a class:list={['case-card','case-card-link',item.featured && 'featured',item.wide && 'wide']} href={item.href}>
+        <div class="case-index">{item.index}</div><div class="case-meta">{item.meta}</div><h3>{item.title}</h3><p>{item.description}</p>
+        <div class="case-card-footer"><span class="case-result">{item.result}</span><span class="arrow" aria-hidden="true">→</span></div>
+      </a>
+    ))}</div>
+  </div></section>
+
+  <section class="section" id="experience"><div class="shell">
+    <div class="section-heading"><div><h2>Work Experience</h2></div></div>
+    <article class="experience-panel"><div class="experience-date">2024.02 — Present</div><div>
+      <h3>비즈비 · ERP Developer</h3>
+      <ul>
+        <li>Java/Spring 기반 인사·근태·급여 ERP에서 AngularJS 화면부터 Spring API·DB 처리까지 기능 단위 End-to-End 개발</li>
+        <li>복잡한 근무정책·상태·날짜 경계와 데이터 정합성 처리</li>
+        <li>Spring Transaction / Scheduler 기반 배치와 실패 격리</li>
+        <li>Oracle / MyBatis 기반 데이터 처리와 성능·운영 이슈 분석</li>
+        <li>외부 REST API 및 전자계약 시스템 연동</li>
+        <li>다중 DataSource 환경 구성과 요청별 DB 라우팅</li>
+      </ul>
+    </div></article>
+  </div></section>
+
+  <section class="section"><div class="shell">
+    <div class="section-heading"><div><h2>More Engineering Experience</h2></div></div>
+    <div class="small-grid">
+      <article class="small-card"><h3>ERP Dashboard · Vue 3 / TypeScript</h3><p>근태 일정 위젯을 구현해 생일·휴가·외근 조회와 위젯 조건 저장을 연동했습니다. 휴가 조회는 데이터 전환 상태에 따른 Spring Service 분기와 MyBatis 조회 SQL까지 수정하며 화면에서 데이터 조회까지 한 흐름으로 다뤘습니다.</p></article>
+      <article class="small-card"><h3>근태 알림 상태 관리</h3><p>미출근·미퇴근 대상 알림의 대기·발송중·성공·실패 상태를 분리하고 실패 대상 재처리와 중복 생성을 방지했습니다.</p></article>
+      <article class="small-card"><h3>eSign Integration & UI State</h3><p>전자계약 생성·외부 식별자·상태·PDF 조회를 연계하고, 저장 후 재조회·재정렬로 선택 행이 어긋나는 문제를 행 인덱스가 아닌 업무 식별 키 기반 복원으로 수정했습니다.</p></article>
+      <article class="small-card"><h3>StockDataController</h3><p>팀 프로젝트에서 금융 API 기반 실시간 데이터 수집, 호출 제한·시장시간 처리와 비동기 처리 및 성능 개선 영역을 담당했습니다.</p></article>
+    </div>
+  </div></section>
+
+  <section class="section" id="study"><div class="shell">
+    <div class="section-heading"><div><h2>Backend Study</h2></div></div>
+    <div class="lab-panel">
+      <p>실무에서 직접 사용하지 않은 JPA/Hibernate와 최신 Java/Spring 동작을 작은 재현 코드와 테스트로 검증하고 있습니다.</p>
+      <p><strong>JPA N+1 재현과 Fetch Join</strong> · <strong>낙관적 락</strong> · <strong>트랜잭션 경계</strong></p>
+      <div class="lab-note">회사 실무 경험이 아닌 개인 학습·실험 프로젝트입니다.</div>
+      <div class="hero-actions"><a class="button button-secondary" href="https://github.com/LIMJAELIN/backend-engineering-lab" target="_blank" rel="noreferrer">Study repository ↗</a></div>
+    </div>
+  </div></section>
+
+  <section class="section"><div class="shell">
+    <div class="section-heading"><div><h2>Experience-based Tech Stack</h2></div></div>
+    <div class="stack-groups">
+      <div class="stack-row"><h3>Production Backend</h3><p>Java · Spring Boot · Spring MVC · Spring Transaction · MyBatis · Oracle · HikariCP · Spring Scheduler</p></div>
+      <div class="stack-row"><h3>Production Frontend</h3><p>AngularJS · JavaScript · Vue 3 · TypeScript · Composition API</p></div>
+      <div class="stack-row"><h3>Personal Project / Operation</h3><p>Python · PostgreSQL · Docker · AWS ECS/Fargate · ECR · RDS · CloudWatch · GitHub Actions</p></div>
+      <div class="stack-row"><h3>Backend Study</h3><p>Java 21 · Spring Data JPA · Hibernate · PostgreSQL</p></div>
+    </div>
+  </div></section>
+
+  <section class="section" id="education"><div class="shell">
+    <div class="section-heading"><div><h2>Education</h2></div></div>
+    <article class="experience-panel"><div class="experience-date">재학 중</div><div>
+      <h3>한국방송통신대학교 · 컴퓨터과학과</h3>
+      <p class="education-copy">3학년 편입 · 2028년 초 졸업 예정</p>
+    </div></article>
+  </div></section>
+
+  <section class="section" id="about"><div class="shell">
+    <div class="section-heading"><div><h2>About</h2></div></div>
+    <h3>업무 규칙과 시스템의 경계를 끝까지 확인하는 백엔드 개발자입니다.</h3>
+    <p class="about-copy">화면에서 시작된 문제가 API, DB, 트랜잭션, 배치까지 이어질 수 있다고 생각해 특정 계층만 보고 판단하지 않습니다. 특히 날짜가 넘어가는 순간, 트랜잭션이 나뉘는 지점, Connection이 확정되는 시점, 프로세스가 재기동된 뒤처럼 상태의 의미가 바뀌는 경계를 중요하게 봅니다. 구현이 동작하는 것에서 끝내기보다 실패·재시도·경계조건에서도 같은 의미를 유지하는지 확인하고, 근거가 부족하면 결론을 내리기보다 먼저 검증할 수 있는 조건을 만듭니다.</p>
+    <div class="hero-actions"><a class="button button-secondary" href="mailto:imjaelin@gmail.com">Email</a><a class="button button-secondary" href="https://github.com/LIMJAELIN" target="_blank" rel="noreferrer">GitHub ↗</a></div>
+  </div></section>
+</SiteLayout>

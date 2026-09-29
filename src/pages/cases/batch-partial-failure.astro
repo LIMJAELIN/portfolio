@@ -1,0 +1,99 @@
+---
+import SiteLayout from '../../layouts/SiteLayout.astro';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
+<SiteLayout
+  title="재집계 배치의 대상 선별과 부분 실패 격리 | 임재린"
+  description="ERP 재집계 배치에서 원천 변경 여부로 대상을 선별하고, 처리 단위별 트랜잭션과 성공·실패 집계로 부분 실패를 격리한 사례입니다."
+>
+  <header class="case-hero">
+    <div class="shell">
+      <div class="breadcrumb"><a href={`${base}/#cases`}>Cases</a> &nbsp;/&nbsp; 03. 재집계 배치의 대상 선별과 부분 실패 격리</div>
+      <div class="case-hero-grid">
+        <div>
+          <p class="eyebrow">Case 03 · Production · Transaction / Batch</p>
+          <h1>재집계 배치의 대상 선별과 부분 실패 격리</h1>
+          <p class="case-lead">
+            원천 근태 데이터가 바뀐 대상을 다시 계산하고,
+            한 건의 실패가 전체 배치로 번지지 않도록 처리 단위와 트랜잭션 경계를 나눴습니다.
+          </p>
+          <div class="case-metric">대상 선별 · 독립 처리 · 실패 집계</div>
+        </div>
+
+        <dl class="case-facts">
+          <div><dt>Type</dt><dd>Production</dd></div>
+          <div><dt>Focus</dt><dd>Transaction / Batch</dd></div>
+          <div><dt>Backend</dt><dd>Java / Spring Boot</dd></div>
+          <div><dt>Data</dt><dd>MyBatis / Oracle</dd></div>
+        </dl>
+      </div>
+    </div>
+  </header>
+
+  <article class="case-body">
+    <section class="case-section">
+      <h2>01. 결과가 있어도 다시 계산해야 할 때가 있습니다</h2>
+      <p>
+        일별 근태 결과가 이미 만들어진 뒤에도 원천 데이터가 수정되면 다시 계산해야 합니다.
+        그래서 “결과가 있느냐”만으로는 배치 대상을 정할 수 없었습니다.
+      </p>
+      <p>필요한 건 <strong>현재 결과가 최신 원천 데이터를 반영한 상태인지</strong>를 구분하는 기준이었습니다.</p>
+    </section>
+
+    <section class="case-section">
+      <h2>02. 재집계 대상은 변경 시점으로 찾았습니다</h2>
+      <p>
+        원천 근태의 변경 시점과 기존 일별 결과의 갱신 상태를 비교해 다시 계산이 필요한 대상을 찾았습니다.
+        이미 최신 상태인 대상은 건너뛰고, 원천 데이터가 더 나중에 바뀐 경우만 재집계 대상으로 넘겼습니다.
+      </p>
+    </section>
+
+    <section class="case-section">
+      <h2>03. 한 건 실패로 전체를 되돌리지 않도록</h2>
+      <p>
+        서로 독립적으로 처리할 수 있는 대상을 하나의 긴 트랜잭션으로 묶으면, 한 건의 오류가 정상 처리 가능한 대상까지 같이 되돌릴 수 있습니다.
+        반대로 예외만 넘겨버리면 실패한 대상이 무엇인지 남지 않습니다.
+      </p>
+      <p>
+        처리 단위별로 독립적인 트랜잭션 경계를 두고, 실패한 단위만 롤백한 뒤 다음 대상을 계속 처리하도록 구성했습니다.
+        이 경계에는 Spring의 <strong>REQUIRES_NEW</strong>를 사용했습니다.
+      </p>
+
+      <div class="flow" aria-label="배치 처리 단위별 흐름">
+        <div class="flow-step">대상 A · Commit</div>
+        <div class="flow-step emphasis">대상 B · Rollback</div>
+        <div class="flow-step">대상 C · Commit</div>
+        <div class="flow-step">성공 / 실패 집계</div>
+      </div>
+    </section>
+
+    <section class="case-section">
+      <h2>04. 자동배치 외에 수동 실행 경로도 뒀습니다</h2>
+      <p>
+        필요한 범위를 다시 실행할 수 있도록 수동 처리 경로를 추가했습니다.
+        각 처리 단위의 성공·실패를 집계해 어디까지 정상 처리됐는지 확인할 수 있게 했고, 실패한 단위만 롤백한 뒤 전체 실행은 계속 진행하도록 했습니다.
+      </p>
+      <ul>
+        <li>성공한 처리 단위의 결과는 유지</li>
+        <li>실패한 처리 단위만 롤백</li>
+        <li>성공·실패 건수를 따로 집계</li>
+      </ul>
+    </section>
+
+    <section class="case-section">
+      <h2>05. 트랜잭션 경계는 업무 단위에 맞췄습니다</h2>
+      <p>
+        이 배치의 대상은 서로 독립적으로 완료될 수 있었습니다.
+        그래서 처리 단위 안에서는 원자성을 유지하고, 처리 단위 사이에서는 실패를 격리하는 쪽이 실제 업무 흐름에 더 맞았습니다.
+      </p>
+    </section>
+
+    <section class="case-section">
+      <h2>06. 정리</h2>
+      <p><strong>무엇을 다시 처리할지와 어디까지를 하나의 성공 단위로 볼지를 함께 정한 작업이었습니다.</strong></p>
+      <p>스케줄러 자체보다 대상 선정 기준과 트랜잭션 경계를 업무 단위에 맞추는 데 더 신경을 썼습니다.</p>
+    </section>
+  </article>
+</SiteLayout>

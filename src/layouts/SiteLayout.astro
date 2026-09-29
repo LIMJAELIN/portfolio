@@ -1,0 +1,139 @@
+---
+import '../styles/global.css';
+import '../styles/polish.css';
+
+const {
+  title = '임재린 | Java / Spring Backend Developer',
+  description = 'Java/Spring 기반 B2B ERP 실무와 개인 프로젝트의 문제 해결 과정을 정리한 백엔드 개발자 포트폴리오입니다.',
+} = Astro.props;
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const home = `${base}/`;
+const cases = `${base}/#cases`;
+const experience = `${base}/#experience`;
+const study = `${base}/#study`;
+const about = `${base}/#about`;
+const canonicalUrl = Astro.site ? new URL(Astro.url.pathname, Astro.site).toString() : Astro.url.toString();
+
+const casePages = [
+  { slug: '/cases/employee-loading-performance/', label: '01 · 사원등록 초기 로딩 성능 개선' },
+  { slug: '/cases/work-schedule-policy/', label: '02 · 근무정책 기반 근무계획 생성' },
+  { slug: '/cases/batch-partial-failure/', label: '03 · 재집계 배치의 대상 선별과 부분 실패 격리' },
+  { slug: '/cases/multi-datasource-routing/', label: '04 · Multi DataSource Routing' },
+  { slug: '/cases/stock-manager-production/', label: '05 · Stock-manager 운영 시스템' },
+  { slug: '/cases/stock-manager-logic/', label: 'Deep Dive · 전략·평가 로직' },
+];
+
+const currentPath = Astro.url.pathname;
+const currentCaseIndex = casePages.findIndex((item) => currentPath.endsWith(item.slug));
+const previousCase = currentCaseIndex > 0 ? casePages[currentCaseIndex - 1] : null;
+const nextCase = currentCaseIndex >= 0 && currentCaseIndex < casePages.length - 1 ? casePages[currentCaseIndex + 1] : null;
+---
+
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content={description} />
+    <meta name="author" content="임재린" />
+    <meta name="theme-color" content="#ffffff" />
+    <link rel="canonical" href={canonicalUrl} />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23182a43'/%3E%3Ctext x='32' y='43' text-anchor='middle' font-size='34' font-family='Arial,sans-serif' font-weight='700' fill='white'%3EJ%3C/text%3E%3C/svg%3E" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="ko_KR" />
+    <meta property="og:site_name" content="임재린 Backend Portfolio" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+
+    <title>{title}</title>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="shell header-inner">
+        <a class="brand" href={home}>임재린</a>
+
+        <nav class="desktop-nav" aria-label="주요 메뉴">
+          <a href={cases}>Cases</a>
+          <a href={experience}>Experience</a>
+          <a href={study}>Study</a>
+          <a href={about}>About</a>
+        </nav>
+
+        <div class="header-actions">
+          <a class="header-link" href="https://github.com/LIMJAELIN" target="_blank" rel="noreferrer">GitHub ↗</a>
+          <details class="mobile-menu">
+            <summary aria-label="메뉴 열기">
+              <span></span><span></span><span></span>
+            </summary>
+            <nav aria-label="모바일 메뉴">
+              <a href={cases}>Cases</a>
+              <a href={experience}>Experience</a>
+              <a href={study}>Study</a>
+              <a href={about}>About</a>
+              <a href="https://github.com/LIMJAELIN" target="_blank" rel="noreferrer">GitHub ↗</a>
+            </nav>
+          </details>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <slot />
+
+      {currentCaseIndex >= 0 && (
+        <nav class="case-pager shell" aria-label="Case 이동">
+          {previousCase ? (
+            <a class="case-pager-link previous" href={`${base}${previousCase.slug}`}>
+              <span>← 이전</span>
+              <strong>{previousCase.label}</strong>
+            </a>
+          ) : (
+            <a class="case-pager-link previous" href={cases}>
+              <span>← 목록</span>
+              <strong>Selected Engineering Cases</strong>
+            </a>
+          )}
+
+          {nextCase ? (
+            <a class="case-pager-link next" href={`${base}${nextCase.slug}`}>
+              <span>다음 →</span>
+              <strong>{nextCase.label}</strong>
+            </a>
+          ) : (
+            <a class="case-pager-link next" href={cases}>
+              <span>목록 →</span>
+              <strong>Selected Engineering Cases</strong>
+            </a>
+          )}
+        </nav>
+      )}
+    </main>
+
+    <footer class="site-footer">
+      <div class="shell footer-inner">
+        <div>
+          <strong>임재린</strong>
+          <p>Java / Spring Backend Developer</p>
+        </div>
+        <div class="footer-links">
+          <a href="mailto:imjaelin@gmail.com">Email</a>
+          <a href="https://github.com/LIMJAELIN" target="_blank" rel="noreferrer">GitHub ↗</a>
+        </div>
+      </div>
+    </footer>
+
+    <script is:inline>
+      document.querySelectorAll('.mobile-menu nav a').forEach((link) => {
+        link.addEventListener('click', () => {
+          link.closest('details')?.removeAttribute('open');
+        });
+      });
+    </script>
+  </body>
+</html>

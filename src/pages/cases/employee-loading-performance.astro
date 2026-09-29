@@ -1,0 +1,136 @@
+---
+import SiteLayout from '../../layouts/SiteLayout.astro';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
+<SiteLayout
+  title="사원등록 초기 로딩 성능 개선 | 임재린"
+  description="ERP 사원등록 화면의 초기 진입 흐름을 화면 초기화·서버 조회·렌더링으로 나누고, 사용하지 않는 하위 탭과 부가 조회를 지연해 초기 경로를 단순화한 사례입니다."
+>
+  <header class="case-hero">
+    <div class="shell">
+      <div class="breadcrumb"><a href={`${base}/#cases`}>Cases</a> &nbsp;/&nbsp; 01. 사원등록 초기 로딩 성능 개선</div>
+      <div class="case-hero-grid">
+        <div>
+          <p class="eyebrow">Case 01 · Production · Performance</p>
+          <h1>사원등록 초기 로딩 성능 개선</h1>
+          <p class="case-lead">
+            AngularJS 화면부터 Spring API와 DB 처리까지 같은 업무 흐름을 담당하면서,
+            최초 진입에 필요하지 않은 하위 탭과 부가 작업을 실제 사용 시점으로 미뤘습니다.
+          </p>
+          <div class="case-metric">초기 경로 단순화 · 지연 로딩</div>
+        </div>
+
+        <dl class="case-facts">
+          <div><dt>Type</dt><dd>Production</dd></div>
+          <div><dt>Focus</dt><dd>Initial loading</dd></div>
+          <div><dt>Frontend</dt><dd>AngularJS</dd></div>
+          <div><dt>Backend</dt><dd>Java / Spring Boot</dd></div>
+          <div><dt>Data</dt><dd>MyBatis / Oracle</dd></div>
+        </dl>
+      </div>
+    </div>
+  </header>
+
+  <article class="case-body">
+    <section class="case-section">
+      <h2>01. 느린 화면을 어디서부터 볼 것인가</h2>
+      <p>
+        사원등록 화면은 인적·기본 정보뿐 아니라 가족·학력·경력·자격·발령·휴직 등 10개가 넘는 하위 탭과 상세 그리드를 함께 다루는 큰 화면이었습니다.
+        최초 진입 시 사용자가 아직 열지 않은 영역까지 초기화와 조회에 참여하면서 첫 작업과 무관한 비용이 앞쪽에 몰려 있었습니다.
+      </p>
+      <p>
+        특정 SQL 하나를 먼저 의심하기보다 <strong>화면 초기화 → API 호출 → 데이터 조회 → 그리드 렌더링</strong> 순서로 실제 대기 경로를 따라갔습니다.
+      </p>
+    </section>
+
+    <section class="case-section">
+      <h2>02. Troubleshooting — 초기 진입에 꼭 필요한가</h2>
+      <p>
+        하위 탭별 그리드 생성과 조회 시점을 확인해보니, 최초 화면을 쓰는 데 필요하지 않은 탭도 진입과 동시에 준비되고 있었습니다.
+        그래서 병목 하나를 더 빠르게 만드는 것보다, 애초에 지금 하지 않아도 되는 작업을 초기 경로에서 빼는 쪽을 선택했습니다.
+      </p>
+
+      <div class="flow" aria-label="기존 초기 로딩 흐름">
+        <div class="flow-step">화면 진입</div>
+        <div class="flow-step">전체 탭 초기화</div>
+        <div class="flow-step">필수·부가 조회</div>
+        <div class="flow-step">상세 그리드 준비</div>
+        <div class="flow-step emphasis">사용 가능</div>
+      </div>
+    </section>
+
+    <section class="case-section">
+      <h2>03. 남길 것과 미룰 것</h2>
+      <div class="two-column">
+        <div class="note-box success">
+          <h3>초기 진입에 남긴 작업</h3>
+          <ul>
+            <li>현재 화면을 구성하는 필수 초기화</li>
+            <li>첫 작업에 필요한 데이터 조회</li>
+            <li>즉시 노출되는 UI 구성</li>
+          </ul>
+        </div>
+        <div class="note-box warning">
+          <h3>실제 사용 시점으로 미룬 작업</h3>
+          <ul>
+            <li>아직 열지 않은 하위 탭</li>
+            <li>부가 정보 조회</li>
+            <li>해당 시점에 필요하지 않은 그리드 렌더링</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="case-section">
+      <h2>04. 실제 변경</h2>
+      <p>
+        하위 탭의 화면 생성과 데이터 조회를 해당 탭을 처음 열 때 수행하도록 바꾸고,
+        부가 정보는 조건에 따라 지연 조회하거나 불필요한 경우 건너뛰도록 정리했습니다.
+      </p>
+
+      <h3>변경 전</h3>
+      <div class="flow">
+        <div class="flow-step">Enter</div>
+        <div class="flow-step">전체 영역 초기화</div>
+        <div class="flow-step">전체 조회</div>
+        <div class="flow-step">하위 영역 렌더링</div>
+        <div class="flow-step emphasis">Usable</div>
+      </div>
+
+      <h3>변경 후</h3>
+      <div class="flow">
+        <div class="flow-step">Enter</div>
+        <div class="flow-step">필수 화면 초기화</div>
+        <div class="flow-step">필수 데이터 조회</div>
+        <div class="flow-step emphasis">Usable</div>
+        <div class="flow-step">탭 진입 시 지연 처리</div>
+      </div>
+    </section>
+
+    <section class="case-section">
+      <h2>05. 미뤘다고 끝나는 건 아니었습니다</h2>
+      <p>
+        지연 로딩은 호출을 뒤로 보내는 것만으로 끝나지 않습니다. 사용자가 탭을 처음 열 때 필요한 데이터가 준비돼야 하고,
+        사원을 바꿨을 때 이전 상태가 남아서도 안 됩니다.
+      </p>
+      <ul>
+        <li>탭 최초 진입 시 화면과 데이터가 정상적으로 준비되는지</li>
+        <li>사원 전환 시 하위 데이터가 현재 사원 기준으로 다시 구성되는지</li>
+        <li>방문하지 않은 영역 때문에 기존 저장 흐름이 깨지지 않는지</li>
+      </ul>
+    </section>
+
+    <section class="case-section">
+      <h2>06. 정리</h2>
+      <div class="result-panel">
+        <strong>초기 진입과 실제 사용 시점을 분리</strong>
+        <p>
+          화면이 느리다고 바로 DB부터 건드리지 않고, 사용자가 기다리는 경로를 화면과 서버 전체에서 나눠 봤습니다.
+          직접 화면까지 담당했기 때문에 API 응답시간뿐 아니라 호출 시점과 렌더링 비용도 함께 볼 수 있었습니다.
+        </p>
+      </div>
+    </section>
+  </article>
+</SiteLayout>

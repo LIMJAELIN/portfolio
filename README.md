@@ -1,9 +1,15 @@
 # 임재린 | Java / Spring Backend Developer
 
 Java/Spring 기반 B2B ERP에서 인사·근태·급여 업무를 개발하고 있습니다.  
-복잡한 업무 규칙, 데이터 정합성, 외부 시스템 연동, 트랜잭션·배치 처리 경험을 쌓았고, 개인 프로젝트에서는 PostgreSQL·Docker·AWS 기반 시스템을 직접 구축·배포·운영했습니다.
+복잡한 업무 규칙과 데이터 정합성, 외부 시스템 연동, 트랜잭션·배치 처리를 다뤄왔고, 개인 프로젝트에서는 PostgreSQL·Docker·AWS 기반 시스템을 직접 구축·배포·운영했습니다.
 
-> 회사 프로젝트는 보안상 소스코드와 내부 자료를 공개하지 않습니다. 아래 내용은 외부 공개 가능한 범위에서 문제, 판단, 구현 구조와 검증 경험을 정리한 것입니다.
+## Core Strengths
+
+- **복잡한 업무 규칙과 데이터 정합성** — 근태·급여·휴가처럼 예외가 많은 업무를 백엔드 로직으로 구조화하고 자동 처리와 사용자 수정 데이터가 충돌하지 않도록 설계
+- **운영 문제를 근거로 좁히는 트러블슈팅** — API 응답 지연, ECS 기동 실패, PostgreSQL 동시성 문제를 로그·이벤트·DB 상태로 구간을 나눠 진단하고 재발 방지까지 연결
+- **실무와 별도로 현대 Java 백엔드 역량 확장** — 실무의 Java 8/Spring Boot/MyBatis 경험과 별도로 Java 21·Spring Boot 4·JPA/Hibernate를 공개 실험과 자동화 테스트로 검증
+
+> ※ 회사 경험은 외부 공개 가능한 범위에서 기술적 문제와 해결 과정을 정리했습니다.
 
 ---
 
@@ -11,27 +17,20 @@ Java/Spring 기반 B2B ERP에서 인사·근태·급여 업무를 개발하고 �
 
 ### 정책 기반 근무계획 생성
 - 근무유형·휴게시간·야간근무·휴일·퇴직일 등 다양한 정책 조건을 반영한 근무계획 생성 로직 구현
-- 중복 생성과 자동 재생성 과정에서 사용자가 직접 수정한 데이터를 덮어쓰지 않도록 보호 조건 분리
-- 날짜·상태 기반 예외처리를 통해 운영 데이터 정합성 보완
+- 자동 재생성 과정에서도 사용자가 직접 수정한 데이터를 덮어쓰지 않도록 보호 조건을 분리해 데이터 정합성 보완
 
 ### Multi DataSource Routing
-- 회사/환경별로 서로 다른 DB를 사용하는 구조에서 요청별 DataSource 동적 선택
-- 회사 코드를 routing key로 사용해 3개 DataSource 중 대상 결정
-- `RoutingDataSource`, `LazyConnectionDataSourceProxy`, `HikariCP`를 연계해 실제 Connection 획득 시점과 라우팅 순서를 맞춤
-
-### 외부 REST API / 전자계약 연동
-- ERP 내부 데이터를 외부 전자계약 형식으로 변환하고 계약 생성부터 상태 조회, PDF 조회까지의 흐름 구현
-- 외부 계약 ID와 내부 업무 데이터를 매핑해 처리 상태 추적
-- 6개 REST API 연계 경험
+- 회사/환경별로 서로 다른 DB를 사용하는 구조에서 요청별 DataSource를 동적으로 선택하도록 구현
+- 회사 코드를 routing key로 사용하고 `RoutingDataSource`, `LazyConnectionDataSourceProxy`, `HikariCP`를 연계해 Connection 획득 시점과 라우팅 순서를 맞춤
 
 ### Batch 부분 실패 격리 / 재처리
-- Spring Scheduler 기반 배치에서 처리 단위를 `REQUIRES_NEW` 트랜잭션으로 분리
-- 개별 실패가 전체 배치를 중단시키지 않도록 성공/실패를 독립적으로 처리
-- 기존 집계 데이터 때문에 재처리 대상이 누락되던 조건 보완
+- Spring Scheduler 기반 배치에서 처리 단위를 `REQUIRES_NEW` 트랜잭션으로 분리해 개별 실패가 전체 작업을 중단시키지 않도록 구성
+- 성공/실패를 독립적으로 관리하고 기존 집계 데이터 때문에 재처리 대상이 누락되던 조건 보완
 
-### API 성능 병목 진단
-- 휴가·출장·연장근무 통합 조회 API의 응답 지연 구간 분석
-- 애플리케이션·MyBatis·JDBC 로그를 분리해 측정하고 DB 쿼리만을 원인으로 단정하지 않도록 병목 범위를 단계적으로 축소
+[→ ERP Batch 상세 Case Study](case-studies/erp-batch.md)
+
+**Other Experience**  
+외부 전자계약 REST API 6종 연계, 외부 ID·상태·PDF 처리, 휴가·출장·연장근무 통합 API의 애플리케이션·MyBatis·JDBC 구간별 성능 병목 진단
 
 ---
 
@@ -39,12 +38,12 @@ Java/Spring 기반 B2B ERP에서 인사·근태·급여 업무를 개발하고 �
 
 ### Stock-manager — Personal Project
 
-금융 데이터 수집·분석 및 트레이딩 시스템  
+금융 데이터 수집·분석 아이디어에서 시작해 자동매매 실행, 클라우드 운영, 장애 대응, 전략 검증까지 확장한 장기 개인 프로젝트  
 `Python` `PostgreSQL` `Docker` `AWS ECS/Fargate` `ECR` `RDS` `SSM` `CloudWatch` `GitHub Actions` `pytest`
 
 ```mermaid
 flowchart LR
-    API[External Financial API] --> APP[Application]
+    API[Financial APIs] --> APP[Application]
     APP --> DB[(PostgreSQL / RDS)]
     GHA[GitHub Actions] --> ECR[ECR]
     ECR --> ECS[ECS Fargate]
@@ -53,24 +52,19 @@ flowchart LR
     ECS --> CW[CloudWatch Logs]
 ```
 
-**Prototype → Cloud Runtime**
-- Windows 기반 분석 프로토타입을 KIS API 기반 runtime으로 재설계
-- Docker·PostgreSQL 기반 실행환경을 AWS ECS/Fargate·ECR·RDS로 이전
-- GitHub Actions 기반 테스트·빌드·배포 흐름 구성
+**운영 시스템으로 확장**  
+로컬 프로토타입에서 데이터 수집·판단·주문·리스크·상태 관리가 분리된 실행 시스템으로 확장하고, Docker·PostgreSQL 기반 환경을 AWS ECS/Fargate·RDS로 이전. GitHub Actions 기반 테스트·빌드·배포·서비스 안정화 확인 흐름 구성.
 
-**Deployment Incident**
-- ECS Task 기동 실패를 Service Event와 컨테이너 로그로 추적
-- 애플리케이션 초기화 단계의 오류 원인을 수정하고 회귀 테스트와 배포 검증 보강
+**트러블슈팅과 운영 안정성**  
+ECS Task 기동 실패를 Service Event와 컨테이너 로그로 추적해 애플리케이션 초기화 오류를 수정하고 회귀 테스트·배포 검증을 보강. PostgreSQL의 데드락과 락 대기 시간 초과를 구분해 rollback, 제한 재시도, 안전한 실패 흐름 적용.
 
-**Database Concurrency**
-- PostgreSQL 운영 중 발생한 deadlock과 lock timeout을 구분
-- SQLSTATE 기반 오류 식별, rollback 후 제한 재시도와 안전한 실패 처리 적용
+**금융 도메인과 전략 검증**  
+백테스트 과정에서 미래 정보가 과거 판단에 섞이면 성과가 과대평가될 수 있음을 반영해, 각 과거 시점에 실제로 알 수 있었던 정보만 평가에 사용. 데이터 시점·보유기간·체결 기준이 불명확하면 성과 결론을 내리지 않는 검증 흐름으로 발전.
 
-**Time-series Verification**
-- Point-in-Time / no-lookahead 원칙을 반영한 검증 흐름 구성
-- replay / ghost 방식으로 시계열 처리 결과 검증
+**설계 판단과 트레이드오프**  
+안전장치와 조건을 계속 추가하는 것이 항상 더 좋은 설계는 아니라는 점을 경험하고, 과도한 제약과 과거 데이터에 맞춘 복잡성을 줄이면서 결과의 신뢰성과 복구 가능성을 기준으로 구조를 재검토.
 
-> Private repository. 실제 운영 구조와 기술적 의사결정은 면접에서 설명 가능합니다.
+[→ Stock-manager 상세 Case Study](case-studies/stock-manager.md)
 
 ---
 
@@ -90,7 +84,7 @@ FastAPI·PostgreSQL 기반 금융 데이터 플랫폼
 
 `Java 21` `Spring Boot 4` `Spring Data JPA` `Hibernate` `PostgreSQL` `GitHub Actions`
 
-실무의 MyBatis 중심 경험과 별도로 modern Java/Spring/JPA 동작을 작은 실험과 자동화 테스트로 직접 검증하는 공개 저장소입니다.
+실무의 MyBatis 중심 경험과 별도로 modern Java/Spring/JPA 동작을 작은 실험과 자동화 테스트로 검증하는 공개 저장소입니다.
 
 - JPA Persistence Context / Dirty Checking
 - N+1 재현 및 Fetch Join
@@ -99,6 +93,15 @@ FastAPI·PostgreSQL 기반 금융 데이터 플랫폼
 - PostgreSQL 기반 GitHub Actions CI
 
 [→ backend-engineering-lab 보기](https://github.com/LIMJAELIN/backend-engineering-lab)
+
+---
+
+## How I Can Contribute
+
+- 복잡한 업무 규칙과 예외 조건을 데이터 정합성을 유지하는 백엔드 로직으로 구조화
+- 장애와 성능 문제를 추측이 아니라 로그·이벤트·구간별 측정을 기준으로 진단
+- 외부 API, 배치, DB 동시성처럼 실패 가능성이 높은 경계에서 재처리와 실패 시나리오를 함께 고려
+- 낯선 도메인에서도 기능 구현에 그치지 않고 어떤 조건에서 결과를 신뢰할 수 있는지 검증 기준까지 설계
 
 ---
 
@@ -124,7 +127,7 @@ FastAPI·PostgreSQL 기반 금융 데이터 플랫폼
 ## Development Approach
 
 - 구현 자체보다 문제 정의, 데이터 정합성, 트랜잭션 경계와 실패 시나리오를 먼저 확인합니다.
-- 장애·성능 문제는 추측보다 로그와 구간별 측정을 통해 원인을 좁혀갑니다.
+- 결과가 좋아 보이는 것과 실제로 신뢰할 수 있는 결과인지를 구분하고, 검증 기준이 부족하면 결론을 서두르지 않습니다.
 - AI Agent를 구현·리팩터링·테스트 보조에 활용하되, 설계 판단과 코드 diff·테스트·로그 기반 검증 및 최종 품질 책임은 직접 수행합니다.
 
 ---
