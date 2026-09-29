@@ -6,7 +6,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 <SiteLayout
   title="근무정책 기반 근무계획 생성 | 임재린"
-  description="ERP에서 여러 근무유형과 휴게시간 정책을 일자별 계획으로 변환하고, 자정 경계·교대 순환·비근무일 검증 같은 실제 edge case를 해결한 사례입니다."
+  description="ERP에서 여러 근무유형과 휴게시간 입력 경로를 일자별 계획으로 변환하고, 자정 경계·교대 순환·비근무일 검증 같은 실제 edge case를 해결한 사례입니다."
 >
   <header class="case-hero">
     <div class="shell">
@@ -16,10 +16,10 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
           <p class="eyebrow">Case 02 · Production · Business Logic</p>
           <h1>복잡한 근무정책을 일자별 근무계획으로 변환</h1>
           <p class="case-lead">
-            여러 근무유형과 휴게시간 정책을 사원별·일자별 계획으로 변환하면서,
-            자정 경계·교대 순환·비근무일처럼 실제로 오류가 나기 쉬운 조건을 하나씩 정리했습니다.
+            근무유형마다 시간 계산과 교대 규칙이 달랐고, 휴게시간도 여러 입력 경로에서 들어왔습니다.
+            이 차이를 하나의 사원별·일자별 계획 생성 흐름에서 처리하면서 자정 경계와 비근무일 같은 예외조건을 정리했습니다.
           </p>
-          <div class="case-metric">5개 근무유형 · 3개 휴게시간 소스</div>
+          <div class="case-metric">5개 근무유형 · 휴게시간 3개 입력 경로</div>
         </div>
 
         <dl class="case-facts">
@@ -37,7 +37,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
       <h2>01. 정상 케이스보다 경계조건이 더 어려웠습니다</h2>
       <p>
         근태 시스템에서는 근무정책을 기준으로 사원별·일자별 근무계획을 생성해야 했습니다.
-        출퇴근 시각만 복사하는 기능이 아니라 근무유형, 휴게시간 소스, 휴일·휴무, 퇴직일, 기존 계획 상태가 한 번에 영향을 줬습니다.
+        단순히 출퇴근 시각을 복사하는 기능이 아니라 <strong>서로 다른 5개 근무유형의 계산 규칙</strong>과 <strong>휴게시간 3개 입력 경로</strong>, 휴일·휴무, 퇴직일, 기존 계획 상태가 한 번에 영향을 줬습니다.
       </p>
       <p>
         실제 문제도 대부분 <strong>날짜가 바뀌는 순간, 값이 비어 있어도 정상인 날, 시작값과 날짜별 계산이 충돌하는 순간</strong>에 나타났습니다.
@@ -45,13 +45,17 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     </section>
 
     <section class="case-section">
-      <h2>02. 한 번에 같이 봐야 했던 규칙</h2>
+      <h2>02. 하나의 생성 흐름 안에서 규칙이 달랐습니다</h2>
+      <p>
+        숫자가 많다는 것보다 어려웠던 점은 같은 근무계획 생성 과정 안에서도 근무유형에 따라 시간 계산과 교대 방식이 달라지고,
+        휴게시간 역시 서로 다른 입력 경로를 통해 들어온다는 점이었습니다.
+      </p>
       <div class="two-column">
         <div class="note-box">
           <h3>정책 계산</h3>
           <ul>
-            <li>5개 근무유형</li>
-            <li>3개 휴게시간 소스</li>
+            <li>5개 근무유형별 시간 계산</li>
+            <li>휴게시간 3개 입력 경로 처리</li>
             <li>근무 시작·종료 시간 계산</li>
             <li>교대 순환 규칙</li>
           </ul>
@@ -136,10 +140,10 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     <section class="case-section">
       <h2>07. 정리</h2>
       <div class="result-panel">
-        <strong>5개 근무유형과 3개 휴게시간 소스를 공통 흐름에서 처리</strong>
+        <strong>서로 다른 계산 규칙을 하나의 생성 흐름에서 처리</strong>
         <p>
           이 작업에서 가장 까다로운 부분은 조건의 개수보다 조건이 적용되는 순서와 날짜 경계였습니다.
-          이후에도 도메인 로직을 볼 때 정상 흐름보다 먼저 “어느 경계에서 이 규칙이 깨질 수 있는가”를 확인하고 있습니다.
+          정상 흐름뿐 아니라 어느 경계에서 규칙이 깨질 수 있는지를 먼저 확인하는 방식으로 로직을 정리했습니다.
         </p>
       </div>
     </section>
