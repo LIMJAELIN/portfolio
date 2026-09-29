@@ -1,0 +1,154 @@
+---
+import SiteLayout from '../../layouts/SiteLayout.astro';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
+<SiteLayout
+  title="근무정책 기반 근무계획 생성 | 임재린"
+  description="ERP에서 여러 근무유형과 휴게시간 정책, 날짜 경계와 휴일·퇴직 등의 예외조건을 반영해 일자별 근무계획을 생성한 사례입니다."
+>
+  <header class="case-hero">
+    <div class="shell">
+      <div class="breadcrumb"><a href={`${base}/#cases`}>Cases</a> &nbsp;/&nbsp; 02. 근무정책 기반 근무계획 생성</div>
+      <div class="case-hero-grid">
+        <div>
+          <p class="eyebrow">Case 02 · Production · Business Logic</p>
+          <h1>복잡한 근무정책을 일자별 근무계획으로 변환</h1>
+          <p class="case-lead">
+            여러 근무유형과 휴게시간 정책을 사원별·일자별 근무계획으로 변환하고,
+            날짜 경계·휴일·퇴직·중복 생성·수동 수정 보호까지 함께 고려한 업무 로직 사례입니다.
+          </p>
+          <div class="case-metric">5개 근무유형 · 3개 휴게시간 소스</div>
+        </div>
+
+        <dl class="case-facts">
+          <div><dt>Type</dt><dd>Production</dd></div>
+          <div><dt>Focus</dt><dd>Business rules / Integrity</dd></div>
+          <div><dt>Backend</dt><dd>Java / Spring Boot</dd></div>
+          <div><dt>Data</dt><dd>MyBatis / Oracle</dd></div>
+        </dl>
+      </div>
+    </div>
+  </header>
+
+  <article class="case-body">
+    <section class="case-section">
+      <h2>01. 상황</h2>
+      <p>
+        근태 시스템에서는 근무정책을 기준으로 사원별·일자별 근무계획을 생성해야 했습니다.
+        단순히 출근·퇴근 시간을 복사하는 문제가 아니라 근무유형에 따라 적용 규칙이 달랐고,
+        휴게시간도 여러 소스에서 결정되어야 했습니다.
+      </p>
+      <p>
+        여기에 익일로 넘어가는 근무, 휴일과 휴무일, 퇴직일, 이미 생성된 데이터,
+        사용자가 직접 수정한 근무계획까지 함께 고려해야 했습니다.
+      </p>
+    </section>
+
+    <section class="case-section">
+      <h2>02. 핵심 제약</h2>
+      <p>이 기능에서 어려웠던 점은 규칙의 수보다 서로 다른 규칙이 같은 일자 데이터에 동시에 영향을 준다는 점이었습니다.</p>
+
+      <div class="two-column">
+        <div class="note-box">
+          <h3>정책에 따른 분기</h3>
+          <ul>
+            <li>5개 근무유형</li>
+            <li>3개 휴게시간 소스</li>
+            <li>근무 시작·종료 시간 계산</li>
+            <li>익일로 넘어가는 시간 처리</li>
+          </ul>
+        </div>
+        <div class="note-box">
+          <h3>데이터 보호 조건</h3>
+          <ul>
+            <li>휴일·휴무일 검증</li>
+            <li>퇴직 이후 생성 방지</li>
+            <li>중복 생성 방지</li>
+            <li>사용자가 수정한 계획 보호</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="case-section">
+      <h2>03. 판단</h2>
+      <p>
+        근무유형마다 생성 로직을 완전히 분리하면 예외조건이 여러 위치에 반복되고,
+        이후 정책이 변경될 때 같은 검증을 각각 수정해야 할 가능성이 커집니다.
+      </p>
+      <p>
+        그래서 <strong>공통으로 적용해야 하는 생성 흐름과 근무유형별 차이를 분리</strong>하고,
+        휴일·퇴직·중복·수동수정 보호처럼 데이터 정합성과 직접 연결되는 조건은 생성 과정에서 일관되게 확인하도록 구성했습니다.
+      </p>
+    </section>
+
+    <section class="case-section">
+      <h2>04. 구현 흐름</h2>
+      <div class="flow" aria-label="근무계획 생성 흐름">
+        <div class="flow-step">대상 사원·일자 확인</div>
+        <div class="flow-step">근무정책 / 유형 판별</div>
+        <div class="flow-step">근무시간 계산</div>
+        <div class="flow-step">휴게시간 반영</div>
+        <div class="flow-step emphasis">검증 후 계획 반영</div>
+      </div>
+
+      <p>
+        근무유형에 맞는 시간 정보를 결정한 뒤 휴게시간 정책을 반영하고,
+        날짜 경계를 넘는 시간은 다음 날 기준까지 고려해 계산했습니다.
+        이후 실제 저장 전에 생성 가능 여부와 기존 데이터 상태를 확인했습니다.
+      </p>
+
+      <h3>날짜 경계 처리</h3>
+      <p>
+        종료시간이나 휴게시간이 자정을 넘는 경우 같은 날짜의 단순 시각 비교만으로는 올바른 순서를 판단할 수 없습니다.
+        따라서 기준일과 익일 여부를 함께 사용해 실제 시간 순서를 계산하도록 처리했습니다.
+      </p>
+
+      <h3>휴게시간 처리</h3>
+      <p>
+        휴게시간은 하나의 고정값이 아니라 서로 다른 3개 소스에서 결정될 수 있어,
+        근무유형과 적용 조건에 맞는 데이터를 선택해 일자별 계획에 반영했습니다.
+      </p>
+    </section>
+
+    <section class="case-section">
+      <h2>05. 데이터 정합성</h2>
+      <p>자동 생성 로직에서는 새 데이터를 만드는 것만큼 기존 데이터를 망가뜨리지 않는 것이 중요했습니다.</p>
+      <ul>
+        <li>같은 대상과 일자에 대한 중복 생성 방지</li>
+        <li>휴일·휴무일 조건에 맞지 않는 계획 생성 방지</li>
+        <li>퇴직 이후 기간에 대한 계획 생성 방지</li>
+        <li>사용자가 직접 수정한 기존 근무계획을 자동 생성이 덮어쓰지 않도록 보호</li>
+        <li>수동 생성과 월 단위 자동 생성에서 동일한 정책이 일관되게 적용되도록 처리</li>
+      </ul>
+      <p>
+        관련 데이터 변경은 하나의 작업 단위 안에서 처리해 중간 상태가 남지 않도록 트랜잭션 경계도 함께 고려했습니다.
+      </p>
+    </section>
+
+    <section class="case-section">
+      <h2>06. 결과</h2>
+      <div class="result-panel">
+        <strong>5개 근무유형과 3개 휴게시간 소스를 하나의 생성 흐름에서 처리</strong>
+        <p>
+          단일 정상 케이스만 처리하는 로직이 아니라 날짜 경계, 휴일·휴무, 퇴직, 중복,
+          수동 수정 보호와 같은 운영 예외조건을 함께 반영한 근무계획 생성 프로세스를 구축했습니다.
+        </p>
+      </div>
+    </section>
+
+    <section class="case-section">
+      <h2>07. 이 경험에서 중요했던 점</h2>
+      <p>
+        이 작업을 통해 업무 로직이 복잡해질수록 조건문을 추가하는 것보다,
+        <strong>어떤 규칙이 공통이고 어떤 규칙이 유형별로 달라지는지 먼저 나누는 것</strong>이 중요하다는 점을 배웠습니다.
+      </p>
+      <p>
+        특히 자동화 기능에서는 정상 생성 여부뿐 아니라 중복 실행, 기존 사용자 데이터,
+        날짜 경계처럼 운영 중 실제로 문제가 될 수 있는 조건을 함께 설계해야 한다는 점을 이후 업무에서도 기준으로 삼고 있습니다.
+      </p>
+    </section>
+  </article>
+</SiteLayout>
