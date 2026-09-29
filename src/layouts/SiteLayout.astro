@@ -12,6 +12,20 @@ const cases = `${base}/#cases`;
 const experience = `${base}/#experience`;
 const study = `${base}/#study`;
 const about = `${base}/#about`;
+
+const casePages = [
+  { slug: '/cases/employee-loading-performance/', label: '01 · 사원등록 초기 로딩 성능 개선' },
+  { slug: '/cases/work-schedule-policy/', label: '02 · 근무정책 기반 근무계획 생성' },
+  { slug: '/cases/batch-partial-failure/', label: '03 · 재집계 배치의 대상 선별과 부분 실패 격리' },
+  { slug: '/cases/multi-datasource-routing/', label: '04 · Multi DataSource Routing' },
+  { slug: '/cases/stock-manager-production/', label: '05 · Stock-manager 운영 시스템' },
+  { slug: '/cases/stock-manager-logic/', label: 'Deep Dive · 전략·평가 로직' },
+];
+
+const currentPath = Astro.url.pathname;
+const currentCaseIndex = casePages.findIndex((item) => currentPath.endsWith(item.slug));
+const previousCase = currentCaseIndex > 0 ? casePages[currentCaseIndex - 1] : null;
+const nextCase = currentCaseIndex >= 0 && currentCaseIndex < casePages.length - 1 ? casePages[currentCaseIndex + 1] : null;
 ---
 
 <!doctype html>
@@ -55,6 +69,34 @@ const about = `${base}/#about`;
 
     <main>
       <slot />
+
+      {currentCaseIndex >= 0 && (
+        <nav class="case-pager shell" aria-label="Case 이동">
+          {previousCase ? (
+            <a class="case-pager-link previous" href={`${base}${previousCase.slug}`}>
+              <span>← 이전</span>
+              <strong>{previousCase.label}</strong>
+            </a>
+          ) : (
+            <a class="case-pager-link previous" href={cases}>
+              <span>← 목록</span>
+              <strong>Selected Engineering Cases</strong>
+            </a>
+          )}
+
+          {nextCase ? (
+            <a class="case-pager-link next" href={`${base}${nextCase.slug}`}>
+              <span>다음 →</span>
+              <strong>{nextCase.label}</strong>
+            </a>
+          ) : (
+            <a class="case-pager-link next" href={cases}>
+              <span>목록 →</span>
+              <strong>Selected Engineering Cases</strong>
+            </a>
+          )}
+        </nav>
+      )}
     </main>
 
     <footer class="site-footer">
