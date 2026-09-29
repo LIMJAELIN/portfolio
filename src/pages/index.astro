@@ -3,6 +3,7 @@ import SiteLayout from '../layouts/SiteLayout.astro';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const performanceCase = `${base}/cases/employee-loading-performance/`;
+const scheduleCase = `${base}/cases/work-schedule-policy/`;
 
 const cases = [
   {
@@ -19,6 +20,8 @@ const cases = [
     meta: 'Business Logic · Production',
     title: '복잡한 근무정책을 일자별 근무계획으로 변환',
     description: '여러 근무유형과 휴게시간 정책, 익일근무·휴일·퇴직일 등의 예외조건을 하나의 생성 흐름에서 처리하고 수동 수정 데이터를 보호했습니다.',
+    result: '5개 근무유형 · 3개 휴게시간 소스',
+    href: scheduleCase,
   },
   {
     index: '03',
@@ -159,20 +162,14 @@ const cases = [
       <div class="section-heading">
         <div>
           <h2>Backend Study</h2>
-          <p>실무의 MyBatis 중심 경험과 별도로 현대 Java/Spring의 주요 동작을 직접 구현하고 테스트하며 학습하고 있습니다.</p>
         </div>
       </div>
 
       <div class="lab-panel">
-        <h3>Backend Study</h3>
-        <p>Java 21 / Spring Boot / JPA / Hibernate를 사용해 동작 원리를 작은 실험과 자동화 테스트로 확인하고 있습니다.</p>
-        <ul class="lab-list">
-          <li>Persistence Context / Dirty Checking</li>
-          <li>N+1 재현 및 Fetch Join</li>
-          <li>Optimistic Locking</li>
-          <li>REQUIRED / REQUIRES_NEW</li>
-          <li>PostgreSQL 기반 CI</li>
-        </ul>
+        <p>
+          실무에서 직접 사용하지 않은 JPA/Hibernate와 최신 Java/Spring 동작을 작은 재현 코드와 자동화 테스트로 검증하고 있습니다.
+        </p>
+        <p><strong>JPA N+1 재현과 Fetch Join</strong> · <strong>낙관적 락</strong> · <strong>트랜잭션 경계</strong></p>
         <div class="lab-note">회사 실무 경험이 아닌 개인 학습·실험 프로젝트입니다.</div>
         <div class="hero-actions">
           <a class="button button-secondary" href="https://github.com/LIMJAELIN/backend-engineering-lab" target="_blank" rel="noreferrer">Study repository ↗</a>
