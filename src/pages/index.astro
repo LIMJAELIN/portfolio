@@ -1,0 +1,226 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const performanceCase = `${base}/cases/employee-loading-performance/`;
+
+const cases = [
+  {
+    index: '01',
+    meta: 'Performance · Production',
+    title: '사원등록 초기 로딩 성능 개선',
+    description: '약 10초가 걸리던 최초 로딩 과정을 초기화·조회·렌더링 구간으로 나눠 확인하고, 필수 작업과 후순위 작업을 분리해 약 3.06초까지 단축했습니다.',
+    result: '약 10초 → 3.06초',
+    href: performanceCase,
+    featured: true,
+  },
+  {
+    index: '02',
+    meta: 'Business Logic · Production',
+    title: '복잡한 근무정책을 일자별 근무계획으로 변환',
+    description: '여러 근무유형과 휴게시간 정책, 익일근무·휴일·퇴직일 등의 예외조건을 하나의 생성 흐름에서 처리하고 수동 수정 데이터를 보호했습니다.',
+  },
+  {
+    index: '03',
+    meta: 'Transaction · Batch · Production',
+    title: '배치 부분 실패 격리와 재처리',
+    description: '한 처리 대상의 실패가 전체 작업을 중단시키지 않도록 업무 단위별 트랜잭션 경계를 분리하고, 실패 대상의 재처리 조건을 보완했습니다.',
+  },
+  {
+    index: '04',
+    meta: 'Spring · Database · Production',
+    title: 'Multi DataSource Routing',
+    description: '회사별로 다른 DB 환경을 사용하는 구조에서 요청에 따라 DataSource를 동적으로 선택하고, 라우팅과 실제 Connection 획득 시점을 함께 고려했습니다.',
+  },
+  {
+    index: '05',
+    meta: 'Personal Project · Cloud · Database',
+    title: '로컬 프로토타입을 클라우드 운영 시스템으로',
+    description: '로컬 금융 시스템을 Docker·PostgreSQL 기반으로 전환하고 AWS ECS/Fargate·RDS에 배포해 실제 기동 장애와 DB 동시성 문제를 분석·보완했습니다.',
+    wide: true,
+  },
+];
+---
+
+<SiteLayout>
+  <section class="hero">
+    <div class="shell">
+      <div class="hero-copy">
+        <p class="eyebrow">Java / Spring Backend Developer</p>
+        <h1>임재린</h1>
+        <p class="hero-role">Java / Spring Backend Developer</p>
+        <p class="hero-description">
+          Java/Spring 기반 B2B ERP에서 인사·근태·급여 업무를 개발하고 있습니다.<br />
+          복잡한 업무 규칙과 데이터 정합성을 다루고, 성능·트랜잭션·배치·외부 시스템 연동 과정에서 발생하는 문제를 분석하고 개선해왔습니다.
+        </p>
+
+        <div class="chips" aria-label="주요 기술">
+          {['Java', 'Spring Boot', 'MyBatis', 'Oracle', 'PostgreSQL'].map((item) => <span class="chip">{item}</span>)}
+        </div>
+
+        <div class="hero-actions">
+          <a class="button button-primary" href="#cases">주요 사례 보기 →</a>
+          <a class="button button-secondary" href="https://github.com/LIMJAELIN" target="_blank" rel="noreferrer">GitHub ↗</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="cases">
+    <div class="shell">
+      <div class="section-heading">
+        <div>
+          <h2>Selected Engineering Cases</h2>
+          <p>실무와 개인 프로젝트에서 직접 다룬 문제와 해결 과정을 정리했습니다.</p>
+        </div>
+      </div>
+
+      <div class="case-grid">
+        {cases.map((item) => item.href ? (
+          <a class:list={['case-card', 'case-card-link', item.featured && 'featured', item.wide && 'wide']} href={item.href}>
+            <div class="case-index">{item.index}</div>
+            <div class="case-meta">{item.meta}</div>
+            <h3>{item.title}</h3>
+            <p>{item.description}</p>
+            <div class="case-card-footer">
+              <span class="case-result">{item.result || '사례 보기'}</span>
+              <span class="arrow" aria-hidden="true">→</span>
+            </div>
+          </a>
+        ) : (
+          <article class:list={['case-card', item.wide && 'wide']}>
+            <div class="case-index">{item.index}</div>
+            <div class="case-meta">{item.meta}</div>
+            <h3>{item.title}</h3>
+            <p>{item.description}</p>
+            <div class="case-card-footer">
+              <span class="case-status">상세 사례 준비 중</span>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="experience">
+    <div class="shell">
+      <div class="section-heading">
+        <div>
+          <h2>Work Experience</h2>
+          <p>현재 회사에서의 핵심 역할과 경험만 간단히 정리했습니다.</p>
+        </div>
+      </div>
+
+      <article class="experience-panel">
+        <div class="experience-date">2024.02 — Present</div>
+        <div>
+          <h3>비즈비 · ERP Developer</h3>
+          <ul>
+            <li>Java/Spring 기반 인사·근태·급여 ERP 개발</li>
+            <li>복잡한 업무 규칙과 데이터 정합성 처리</li>
+            <li>Spring Transaction / Scheduler 기반 배치</li>
+            <li>Oracle / MyBatis 기반 데이터 처리</li>
+            <li>외부 REST API 및 전자계약 시스템 연동</li>
+            <li>다중 DataSource 환경과 운영 성능 문제 분석</li>
+          </ul>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="shell">
+      <div class="section-heading">
+        <div>
+          <h2>More Engineering Experience</h2>
+          <p>대표 Case 외에도 운영 흐름과 외부 연동을 다룬 경험이 있습니다.</p>
+        </div>
+      </div>
+
+      <div class="small-grid">
+        <article class="small-card">
+          <h3>근태 알림 상태 관리</h3>
+          <p>미출근·미퇴근 대상 알림의 대기·발송중·성공·실패 상태를 관리하고 실패 대상 재처리와 중복 생성을 방지했습니다.</p>
+        </article>
+        <article class="small-card">
+          <h3>eSign Integration</h3>
+          <p>ERP 데이터를 외부 전자계약 형식으로 변환하고 계약 생성, 외부 식별자 매핑, 상태 및 PDF 조회 흐름을 연계했습니다.</p>
+        </article>
+        <article class="small-card">
+          <h3>StockDataController</h3>
+          <p>팀 프로젝트에서 금융 API 기반 실시간 데이터 수집, 호출 제한·시장시간 처리와 비동기 처리 및 성능 개선 영역을 담당했습니다.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="lab">
+    <div class="shell">
+      <div class="section-heading">
+        <div>
+          <h2>Engineering Lab</h2>
+          <p>회사 production 경험과 분리해 현대 Java/Spring 동작을 직접 재현하고 검증합니다.</p>
+        </div>
+      </div>
+
+      <div class="lab-panel">
+        <h3>Backend Engineering Lab</h3>
+        <p>실무의 MyBatis 중심 경험과 별도로 Java 21 / Spring Boot / JPA / Hibernate 동작을 작은 실험과 자동화 테스트로 확인하고 있습니다.</p>
+        <ul class="lab-list">
+          <li>Persistence Context / Dirty Checking</li>
+          <li>N+1 재현 및 Fetch Join</li>
+          <li>Optimistic Locking</li>
+          <li>REQUIRED / REQUIRES_NEW</li>
+          <li>PostgreSQL 기반 CI</li>
+        </ul>
+        <div class="lab-note">Hands-on proof, not production experience.</div>
+        <div class="hero-actions">
+          <a class="button button-secondary" href="https://github.com/LIMJAELIN/backend-engineering-lab" target="_blank" rel="noreferrer">Public repository ↗</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="shell">
+      <div class="section-heading">
+        <div>
+          <h2>Experience-based Tech Stack</h2>
+          <p>기술 이름보다 실제 사용 맥락을 구분해 표시합니다.</p>
+        </div>
+      </div>
+
+      <div class="stack-groups">
+        <div class="stack-row">
+          <h3>Production</h3>
+          <p>Java · Spring Boot · Spring MVC · Spring Transaction · MyBatis · Oracle · HikariCP · Spring Scheduler</p>
+        </div>
+        <div class="stack-row">
+          <h3>Personal Project / Operation</h3>
+          <p>Python · PostgreSQL · Docker · AWS ECS/Fargate · ECR · RDS · CloudWatch · GitHub Actions</p>
+        </div>
+        <div class="stack-row">
+          <h3>Engineering Lab</h3>
+          <p>Java 21 · Spring Data JPA · Hibernate · PostgreSQL</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="about">
+    <div class="shell">
+      <div class="section-heading">
+        <div>
+          <h2>About</h2>
+        </div>
+      </div>
+      <p class="about-copy">
+        복잡한 문제를 기술 이름으로 포장하기보다, 실제로 어떤 제약이 있었고 왜 그런 방식으로 해결했는지를 설명할 수 있는 개발자가 되는 것을 중요하게 생각합니다.
+      </p>
+      <div class="hero-actions">
+        <a class="button button-secondary" href="mailto:imjaelin@gmail.com">Email</a>
+        <a class="button button-secondary" href="https://github.com/LIMJAELIN" target="_blank" rel="noreferrer">GitHub ↗</a>
+      </div>
+    </div>
+  </section>
+</SiteLayout>
