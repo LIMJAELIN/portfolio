@@ -39,24 +39,15 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         일별 근태 결과가 이미 만들어진 뒤에도 원천 데이터가 수정되면 다시 계산해야 합니다.
         그래서 “결과가 있느냐”만으로는 배치 대상을 정할 수 없었습니다.
       </p>
-      <p>
-        필요한 건 <strong>현재 결과가 최신 원천 데이터를 반영한 상태인지</strong>를 구분하는 기준이었습니다.
-      </p>
+      <p>필요한 건 <strong>현재 결과가 최신 원천 데이터를 반영한 상태인지</strong>를 구분하는 기준이었습니다.</p>
     </section>
 
     <section class="case-section">
       <h2>02. 재집계 대상은 변경 시점으로 찾았습니다</h2>
       <p>
-        원천 근태의 변경 시점과 기존 일별 결과의 갱신 상태를 비교해 다시 계산이 필요한 대상을 찾는 흐름을 구성했습니다.
+        원천 근태의 변경 시점과 기존 일별 결과의 갱신 상태를 비교해 다시 계산이 필요한 대상을 찾았습니다.
+        이미 최신 상태인 대상은 건너뛰고, 원천 데이터가 더 나중에 바뀐 경우만 재집계 대상으로 넘겼습니다.
       </p>
-
-      <div class="flow" aria-label="재집계 대상 선별 흐름">
-        <div class="flow-step">원천 데이터 변경</div>
-        <div class="flow-step">기존 일별 결과 확인</div>
-        <div class="flow-step emphasis">재집계 필요 여부 판단</div>
-        <div class="flow-step">대상별 재계산</div>
-        <div class="flow-step">성공 / 실패 집계</div>
-      </div>
     </section>
 
     <section class="case-section">
@@ -67,41 +58,28 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
       </p>
       <p>
         처리 단위별로 독립적인 트랜잭션 경계를 두고, 실패한 단위만 롤백한 뒤 다음 대상을 계속 처리하도록 구성했습니다.
-        이 경계에는 Spring의 <strong>REQUIRES_NEW</strong>를 사용한 코드가 포함됩니다.
+        이 경계에는 Spring의 <strong>REQUIRES_NEW</strong>를 사용했습니다.
       </p>
 
       <div class="flow" aria-label="배치 처리 단위별 흐름">
         <div class="flow-step">대상 A · Commit</div>
         <div class="flow-step emphasis">대상 B · Rollback</div>
         <div class="flow-step">대상 C · Commit</div>
-        <div class="flow-step">성공 / 실패 건수 집계</div>
+        <div class="flow-step">성공 / 실패 집계</div>
       </div>
     </section>
 
     <section class="case-section">
       <h2>04. 자동배치 외에 수동 실행 경로도 뒀습니다</h2>
       <p>
-        필요한 범위를 다시 실행할 수 있도록 수동 처리 경로를 추가했고,
-        대상별 예외를 성공·실패로 나눠 전체 실행이 어디까지 진행됐는지 확인할 수 있게 했습니다.
+        필요한 범위를 다시 실행할 수 있도록 수동 처리 경로를 추가했습니다.
+        각 처리 단위의 성공·실패를 집계해 어디까지 정상 처리됐는지 확인할 수 있게 했고, 실패한 단위만 롤백한 뒤 전체 실행은 계속 진행하도록 했습니다.
       </p>
-      <div class="two-column">
-        <div class="note-box success">
-          <h3>성공</h3>
-          <ul>
-            <li>해당 처리 단위 완료</li>
-            <li>결과 유지</li>
-            <li>다음 대상 계속 진행</li>
-          </ul>
-        </div>
-        <div class="note-box warning">
-          <h3>실패</h3>
-          <ul>
-            <li>해당 처리 단위 롤백</li>
-            <li>실패 결과 집계</li>
-            <li>전체 실행은 계속 진행</li>
-          </ul>
-        </div>
-      </div>
+      <ul>
+        <li>성공한 처리 단위의 결과는 유지</li>
+        <li>실패한 처리 단위만 롤백</li>
+        <li>성공·실패 건수를 따로 집계</li>
+      </ul>
     </section>
 
     <section class="case-section">
@@ -114,10 +92,8 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
     <section class="case-section">
       <h2>06. 정리</h2>
-      <div class="result-panel">
-        <strong>대상 선정 기준과 실패 경계를 함께 설계</strong>
-        <p>스케줄러를 돌리는 것보다 무엇을 다시 처리할지, 어디까지를 하나의 성공 단위로 볼지 먼저 정하는 작업에 가까웠습니다.</p>
-      </div>
+      <p><strong>무엇을 다시 처리할지와 어디까지를 하나의 성공 단위로 볼지를 함께 정한 작업이었습니다.</strong></p>
+      <p>스케줄러 자체보다 대상 선정 기준과 트랜잭션 경계를 업무 단위에 맞추는 데 더 신경을 썼습니다.</p>
     </section>
   </article>
 </SiteLayout>
