@@ -8,6 +8,26 @@
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
+.evidence-shot {
+  margin: 28px 0 0;
+}
+
+.evidence-shot img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: #0d1117;
+}
+
+.evidence-shot figcaption {
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
 .case-pager {
   padding: 0 0 72px;
   display: grid;
