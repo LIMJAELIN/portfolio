@@ -4,10 +4,10 @@ import SiteLayout from '../layouts/SiteLayout.astro';
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const cases = [
   { index:'01', meta:'Performance · Production', title:'사원등록 초기 로딩 성능 개선', description:'가족·학력·경력·자격·발령·휴직 등 10개가 넘는 하위 탭을 가진 화면에서, 최초 진입에 필요하지 않은 초기화와 조회를 실제 사용 시점으로 지연했습니다.', result:'초기 경로 단순화 · 지연 로딩', href:`${base}/cases/employee-loading-performance/`, featured:true },
-  { index:'02', meta:'Business Logic · Production', title:'복잡한 근무정책을 일자별 근무계획으로 변환', description:'서로 다른 5개 근무유형과 휴게시간 3개 입력 경로를 하나의 생성 흐름에서 처리하고, 자정 경계·교대 순환·비근무일 같은 예외조건을 보완했습니다.', result:'정책 계산 · 날짜 경계 · 예외 처리', href:`${base}/cases/work-schedule-policy/` },
+  { index:'02', meta:'Business Logic · Production', title:'복잡한 근무정책을 일자별 근무계획으로 변환', description:'근무유형마다 다른 시간·교대 규칙과 여러 휴게시간 입력 경로를 하나의 생성 흐름에서 처리하고, 자정 경계·비근무일 같은 예외조건을 보완했습니다.', result:'정책 계산 · 날짜 경계 · 예외 처리', href:`${base}/cases/work-schedule-policy/` },
   { index:'03', meta:'Transaction · Batch · Production', title:'재집계 배치의 대상 선별과 부분 실패 격리', description:'원천 데이터 변경 여부로 재집계 대상을 선별하고, 처리 단위별 트랜잭션과 성공·실패 집계로 한 건의 오류가 전체 배치로 번지지 않도록 구성했습니다.', result:'대상 선별 · 독립 처리 · 실패 집계', href:`${base}/cases/batch-partial-failure/` },
   { index:'04', meta:'Spring · Database · Production', title:'Multi DataSource Routing', description:'3개 DB 환경을 요청 컨텍스트에 따라 동적으로 선택하고, routing key와 transaction, 실제 Connection 획득 시점의 관계까지 고려해 구성했습니다.', result:'3개 DB 환경 · 동적 라우팅', href:`${base}/cases/multi-datasource-routing/` },
-  { index:'05', meta:'Personal Project · System · Operations', title:'자동매매 프로토타입을 운영 가능한 시스템으로 확장', description:'분석 프로토타입을 주문·리스크·상태가 분리된 실행 시스템으로 확장하고, AWS 운영 중 실제 ECS 기동 실패와 PostgreSQL 동시성 문제를 진단·보완했습니다.', result:'Prototype → Runtime → Operations', href:`${base}/cases/stock-manager-production/`, wide:true },
+  { index:'05', meta:'Personal Project · System · Operations', title:'자동매매 프로토타입을 운영 가능한 시스템으로 확장', description:'분석 프로토타입을 주문·리스크·상태가 분리된 실행 시스템으로 확장하고, AWS 운영 중 실제 ECS 기동 실패와 PostgreSQL 동시성 문제를 진단·보완했습니다.', result:'프로토타입 → 실행 → 운영 → 검증', href:`${base}/cases/stock-manager-production/`, wide:true },
 ];
 ---
 
@@ -86,7 +86,7 @@ const cases = [
 
   <section class="section" id="about"><div class="shell">
     <div class="section-heading"><div><h2>About</h2></div></div>
-    <p class="about-copy">문제가 생기면 어느 계층의 문제라고 미리 정해놓기보다 실제 요청과 데이터 흐름을 따라가며 상태가 어긋나는 지점을 찾습니다. 로그·코드·DB 상태를 맞춰 재현 조건을 좁히고, 수정한 뒤에는 정상 동작뿐 아니라 실패·재시도·경계조건에서도 의미가 유지되는지 확인하는 편입니다.</p>
+    <p class="about-copy">문제를 처음부터 프론트엔드·백엔드·DB 중 하나라고 단정하지 않고, 실제 요청과 데이터가 어디서 어긋나는지부터 봅니다. 로그와 DB 상태를 같이 보면서 재현 조건을 좁힌 뒤 수정하고, 비슷한 경계조건에서도 같은 문제가 다시 생기지 않는지 확인하는 편입니다.</p>
     <div class="hero-actions"><a class="button button-secondary" href="mailto:imjaelin@gmail.com">Email</a><a class="button button-secondary" href="https://github.com/LIMJAELIN" target="_blank" rel="noreferrer">GitHub ↗</a></div>
   </div></section>
 </SiteLayout>
