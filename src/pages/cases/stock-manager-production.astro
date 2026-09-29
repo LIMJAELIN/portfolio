@@ -96,7 +96,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     <section class="case-section">
       <h2>04. 주문 상태의 기준을 프로세스 메모리 밖으로</h2>
       <p>
-        실주문 경로를 검토하면서 주문 API 응답 유실, 부분 체결 뒤 재기동, 늦게 들어오는 fill,
+        주문 실행 경로의 안전성을 검토하면서 주문 API 응답 유실, 부분 체결 뒤 재기동, 늦게 들어오는 fill,
         두 runtime의 동시 접근처럼 단순 request/response 상태만으로는 안전하게 설명하기 어려운 실패조건을 다뤘습니다.
       </p>
       <div class="two-column">
