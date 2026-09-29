@@ -6,7 +6,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 <SiteLayout
   title="자동매매 프로토타입을 운영 가능한 시스템으로 확장 | 임재린"
-  description="작은 금융 분석 프로토타입에서 시작한 Stock-manager를 주문 실행·리스크 관리·상태 관리 구조와 PostgreSQL·Docker·AWS 기반 운영 환경, 장애 대응과 검증 흐름까지 확장한 사례입니다."
+  description="작은 금융 분석 프로토타입을 상태를 가진 실행 시스템으로 확장하고, PostgreSQL·AWS 운영 장애와 주문 상태 정합성, 배포 안전장치를 보완한 사례입니다."
 >
   <header class="case-hero">
     <div class="shell">
@@ -16,14 +16,14 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
           <p class="eyebrow">Case 05 · Personal Project · System / Operations</p>
           <h1>자동매매 프로토타입을 운영 가능한 시스템으로 확장</h1>
           <p class="case-lead">
-            작은 금융 데이터 분석 도구에서 시작한 Stock-manager를 주문 실행·리스크 관리·상태 관리가 분리된 실행 시스템으로 확장하고,
-            PostgreSQL·Docker·AWS 기반 운영과 실제 장애 대응, 결과 검증 흐름까지 직접 구축했습니다.
+            작은 금융 분석 도구에서 시작한 Stock-manager를 주문·리스크·상태를 분리한 실행 시스템으로 확장했습니다.
+            Docker/AWS 배포 자체보다, 실제 장애와 실패조건을 만나면서 상태와 복구 기준을 계속 보완한 과정에 초점을 맞췄습니다.
           </p>
         </div>
 
         <dl class="case-facts">
           <div><dt>Type</dt><dd>Personal Project</dd></div>
-          <div><dt>Focus</dt><dd>System / Operations</dd></div>
+          <div><dt>Focus</dt><dd>Runtime / Operations</dd></div>
           <div><dt>Runtime</dt><dd>Python / Docker</dd></div>
           <div><dt>Infra</dt><dd>AWS ECS / RDS</dd></div>
         </dl>
@@ -33,21 +33,11 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
   <article class="case-body">
     <section class="case-section">
-      <h2>01. 처음엔 작은 분석 도구였습니다</h2>
+      <h2>01. 분석 도구에서 상태를 가진 런타임으로</h2>
       <p>
-        Windows 로컬 환경에서 주식 데이터와 뉴스를 수집하고 분석 결과를 확인하는 정도로 시작했습니다.
-        계속 사용하다 보니 주문 실행, 시장 시간, 상태 관리, 리스크 제어, 장애 확인 같은 요구가 하나씩 생겼습니다.
+        처음에는 Windows 로컬에서 주식 데이터와 뉴스를 수집하고 분석 결과를 확인하는 정도였습니다.
+        주문 실행까지 범위가 넓어지면서 시장 시간, 리스크, 주문 상태, 재기동, 장애 확인처럼 단발성 스크립트로는 넘기기 어려운 문제가 생겼습니다.
       </p>
-      <p>처음부터 큰 구조를 그린 것이 아니라, 실제로 필요한 기능과 문제를 만날 때마다 구조를 키웠습니다.</p>
-    </section>
-
-    <section class="case-section">
-      <h2>02. 실행하고 복구할 수 있는 런타임으로</h2>
-      <p>
-        단일 분석 흐름에서 데이터 수집, 판단, 주문, 리스크 관리, 시장 스케줄, 상태 확인을 분리했고,
-        로컬 저장소도 PostgreSQL 기반으로 전환했습니다.
-      </p>
-
       <div class="flow" aria-label="Stock-manager 진화 흐름">
         <div class="flow-step">Analysis Prototype</div>
         <div class="flow-step">Trading Runtime</div>
@@ -55,103 +45,121 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         <div class="flow-step emphasis">Operations</div>
         <div class="flow-step">Verification</div>
       </div>
-
       <p>
-        목표는 AWS를 붙이는 것이 아니라, 한 번 실행해보는 프로그램을 <strong>반복 실행·배포하고 상태를 확인하며 문제를 복구할 수 있는 시스템</strong>으로 바꾸는 것이었습니다.
+        애플리케이션은 Docker/ECS/Fargate에서 실행하고 데이터는 RDS PostgreSQL에 저장했습니다.
+        GitHub Actions로 테스트·이미지 빌드·ECR push·ECS 배포까지 이어지도록 구성했습니다.
       </p>
     </section>
 
     <section class="case-section">
-      <h2>03. 운영 환경</h2>
+      <h2>02. ECS Task가 뜨지 않았던 날</h2>
       <p>
-        애플리케이션을 Docker 이미지로 만들고 ECR에 저장한 뒤 ECS/Fargate에서 실행했습니다.
-        데이터는 RDS PostgreSQL로 옮기고, 실행 설정은 SSM Parameter Store, 로그는 CloudWatch를 사용했습니다.
-      </p>
-      <p>GitHub Actions에서는 설정 검증, 테스트, 이미지 빌드, ECR push, ECS 배포, 서비스 안정화 확인까지 이어지도록 구성했습니다.</p>
-
-      <div class="flow" aria-label="CI/CD 흐름">
-        <div class="flow-step">Config / Test</div>
-        <div class="flow-step">Docker Build</div>
-        <div class="flow-step">ECR Push</div>
-        <div class="flow-step">ECS Deploy</div>
-        <div class="flow-step emphasis">Stability Check</div>
-      </div>
-    </section>
-
-    <section class="case-section">
-      <h2>04. Troubleshooting 01 — 배포는 됐는데 Task가 죽었습니다</h2>
-      <p>
-        새 ECS Task가 정상 기동하지 못하고 서비스가 안정화되지 않는 문제가 있었습니다.
-        파이프라인은 배포 단계까지 진행됐기 때문에, “배포됐는가”보다 <strong>애플리케이션이 어디에서 종료되는가</strong>를 먼저 좁혔습니다.
+        새 배포에서 ECS Task가 반복 종료되며 deployment rollback이 발생했습니다.
+        Service Event에서 task start failure를 확인한 뒤 컨테이너 fatal log까지 내려가,
+        <strong>TradingRuntime이 넘기는 신규 인자와 RiskManager 생성자 계약이 어긋난 것</strong>을 원인으로 특정했습니다.
       </p>
       <div class="flow" aria-label="ECS 장애 진단 흐름">
-        <div class="flow-step">Deployment</div>
-        <div class="flow-step">Task 반복 종료</div>
-        <div class="flow-step">Service Event / Log</div>
-        <div class="flow-step emphasis">초기화 구간 원인 특정</div>
-        <div class="flow-step">수정 · 재배포</div>
+        <div class="flow-step">Deploy</div>
+        <div class="flow-step">Task start failure</div>
+        <div class="flow-step">Container log</div>
+        <div class="flow-step emphasis">Constructor mismatch</div>
+        <div class="flow-step">Regression / Redeploy</div>
       </div>
       <p>
-        ECS Service Event와 컨테이너 로그를 따라가며 애플리케이션 초기화 구간까지 범위를 좁혔고,
-        객체 생성 시 전달되는 인자와 실제 생성자 정의가 맞지 않는 문제를 찾아 수정했습니다.
+        생성자 계약을 맞추고 관련 리스크 동작을 회귀 테스트로 보강했습니다.
+        배포 성공과 애플리케이션 기동 성공을 같은 상태로 보면 안 된다는 걸 실제 장애로 확인한 사례였습니다.
       </p>
-      <p>회귀 테스트 후 다시 배포했고, 같은 종류의 문제가 배포 뒤에야 드러나지 않도록 사전 검증도 보강했습니다.</p>
+      <div class="hero-actions">
+        <a class="button button-secondary" href="https://github.com/LIMJAELIN/Stock-manager/commit/6ef4ae5e07bc11dcaca220987c33f15634265f45" target="_blank" rel="noreferrer">관련 commit ↗</a>
+      </div>
     </section>
 
     <section class="case-section">
-      <h2>05. Troubleshooting 02 — PostgreSQL에서 드러난 런타임 차이</h2>
+      <h2>03. PostgreSQL deadlock — 재시도보다 원인을 없애기</h2>
       <p>
-        로컬 DB와 PostgreSQL의 SQL·datetime 처리 차이를 수정하는 과정에서 deadlock과 lock timeout도 함께 다뤘습니다.
-        두 오류를 하나의 “DB 예외”로 묶지 않고, 재시도 가능한 경우와 중단해야 하는 경우를 나눴습니다.
+        PostgreSQL 전환 뒤 deadlock과 lock timeout을 구분해 rollback 후 제한 재시도하는 방어를 넣었지만,
+        이후 dashboard snapshot 조회에서 실제 <strong>DeadlockDetected</strong>가 다시 발생했습니다.
       </p>
+      <p>
+        stack을 따라가 보니 조회 경로에서 DatabaseManager를 만들 때 schema initialization이 함께 실행되고 있었고,
+        read 성격의 요청이 <code>CREATE INDEX IF NOT EXISTS</code> 같은 DDL lock까지 잡을 수 있는 구조였습니다.
+      </p>
+      <p>
+        그래서 retry 횟수를 늘리는 대신 schema 변경 책임을 조회 경로에서 분리했습니다.
+        PostgreSQL dashboard 조회에서는 schema initialization을 끄고, 이 동작이 유지되는 regression test를 추가했습니다.
+      </p>
+      <div class="hero-actions">
+        <a class="button button-secondary" href="https://github.com/LIMJAELIN/Stock-manager/commit/0bcc1f0647032662d1b81c4bb27472e5ba245aee" target="_blank" rel="noreferrer">deadlock 수정 commit ↗</a>
+      </div>
+    </section>
 
+    <section class="case-section">
+      <h2>04. 주문 상태의 기준을 프로세스 메모리 밖으로</h2>
+      <p>
+        실주문 경로를 검토하면서 주문 API 응답 유실, 부분 체결 뒤 재기동, 늦게 들어오는 fill,
+        두 runtime의 동시 접근처럼 단순 request/response 상태만으로는 안전하게 설명하기 어려운 실패조건을 다뤘습니다.
+      </p>
       <div class="two-column">
         <div class="note-box success">
-          <h3>구분한 것</h3>
+          <h3>상태의 권위</h3>
           <ul>
-            <li>DB dialect / datetime 호환성</li>
-            <li>deadlock과 lock timeout</li>
-            <li>재시도 가능한 실패와 중단할 실패</li>
+            <li>persistent active-order state</li>
+            <li>broker reconciliation</li>
+            <li>cumulative fill 기반 idempotent update</li>
+            <li>partial fill 잔여 상태 유지</li>
           </ul>
         </div>
         <div class="note-box warning">
-          <h3>대응</h3>
+          <h3>동시 실행 방어</h3>
           <ul>
-            <li>실패 transaction rollback</li>
-            <li>제한된 retry</li>
-            <li>반복 실패 시 안전한 중단 또는 fallback</li>
+            <li>execution lease / heartbeat</li>
+            <li>owner + fencing token</li>
+            <li>stale owner mutation 차단</li>
+            <li>reconcile 실패 시 fail closed</li>
           </ul>
         </div>
+      </div>
+      <p>
+        핵심은 “주문 요청을 보냈다”가 아니라 <strong>프로세스가 죽거나 응답을 잃어도 외부 broker 상태와 로컬 상태를 다시 수렴시킬 수 있는가</strong>였습니다.
+        response loss, restart, partial fill, late fill 같은 실패조건은 테스트로 재현했습니다.
+      </p>
+      <div class="hero-actions">
+        <a class="button button-secondary" href="https://github.com/LIMJAELIN/Stock-manager/pull/136" target="_blank" rel="noreferrer">Execution Integrity PR ↗</a>
       </div>
     </section>
 
     <section class="case-section">
-      <h2>06. 장애 뒤에 배포 가드를 추가했습니다</h2>
+      <h2>05. 자동화에도 우회 경로가 있었습니다</h2>
       <p>
-        자동 배포는 잘못된 상태도 빠르게 배포할 수 있습니다.
-        그래서 Task Definition, runtime 설정, 배포 산출물, 서비스 안정화 여부를 확인하는 단계를 추가했습니다.
+        테스트가 존재하는 것과 모든 production 배포가 그 테스트를 반드시 거치는 것은 달랐습니다.
+        workflow의 <code>paths:</code> 조건 때문에 required check 자체가 생성되지 않을 수 있는 경로를 확인하고,
+        production readiness 검증을 재사용 가능한 gate로 모았습니다.
       </p>
-      <p>배포 버튼을 없애는 것보다, 잘못된 상태를 앞에서 걸러내고 배포 뒤 실제 서비스 상태까지 보는 쪽에 초점을 맞췄습니다.</p>
+      <p>
+        production deploy는 gate와 별도 검증, 명시적 배포 승인 조건을 모두 만족해야 진행하도록 연결했고,
+        테스트 코드에서 workflow wiring 자체도 검사하도록 했습니다.
+      </p>
+      <div class="hero-actions">
+        <a class="button button-secondary" href="https://github.com/LIMJAELIN/Stock-manager/pull/138" target="_blank" rel="noreferrer">Production Readiness PR ↗</a>
+      </div>
     </section>
 
     <section class="case-section">
-      <h2>07. 전략 결과도 검증 대상이 됐습니다</h2>
+      <h2>06. 전략 결과도 시스템의 출력으로 봤습니다</h2>
       <p>
-        후반에는 운영 안정성뿐 아니라 전략 평가 결과를 어디까지 믿어도 되는지도 별도 문제로 다뤘습니다.
-        과거 시점의 판단을 재현할 때 미래에 확정되는 정보가 섞이지 않도록 source / observed / available 시점을 분리하고,
-        아직 관찰할 수 없었던 파생 데이터가 평가에 포함되지 않도록 no-lookahead 검증을 추가했습니다.
+        프로젝트 후반에는 “전략 결과가 나왔다”와 “그 결과를 믿어도 된다”를 분리했습니다.
+        데이터 시점, 보유기간, 실행 기준, 평가 원장이 맞지 않으면 성과 계산 자체를 막고,
+        이미 계산한 결과라도 입력 근거에 문제가 발견되면 폐기하는 방향으로 평가 구조를 발전시켰습니다.
       </p>
-      <p>시점·체결 기준·보유기간·데이터 출처가 불명확하면 성과 계산 자체를 멈추는 방향으로 평가 흐름도 바뀌었습니다.</p>
       <div class="hero-actions">
         <a class="button button-secondary" href={`${base}/cases/stock-manager-logic/`}>전략·평가 로직 Deep Dive →</a>
       </div>
     </section>
 
     <section class="case-section">
-      <h2>08. 지금의 구조</h2>
       <div class="result-panel">
         <strong>Prototype → Runtime → Operations → Verification</strong>
-        <p>작은 분석 도구에서 시작해 실제 배포 장애와 DB 동시성 문제를 겪고, 운영과 검증 기준을 계속 추가한 프로젝트입니다.</p>
+        <p>자동매매 기능의 수보다, 실패했을 때 상태와 판단 근거가 망가지지 않도록 구조를 계속 수정한 과정이 이 프로젝트에서 가장 큰 개발 경험이었습니다.</p>
       </div>
       <div class="hero-actions">
         <a class="button button-secondary" href="https://github.com/LIMJAELIN/Stock-manager" target="_blank" rel="noreferrer">Repository ↗</a>
