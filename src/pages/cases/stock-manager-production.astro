@@ -69,9 +69,6 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         생성자 계약을 맞추고 관련 리스크 동작을 회귀 테스트로 보강했습니다.
         배포 성공과 애플리케이션 기동 성공을 같은 상태로 보면 안 된다는 걸 실제 장애로 확인한 사례였습니다.
       </p>
-      <div class="hero-actions">
-        <a class="button button-secondary" href="https://github.com/LIMJAELIN/Stock-manager/commit/6ef4ae5e07bc11dcaca220987c33f15634265f45" target="_blank" rel="noreferrer">관련 commit ↗</a>
-      </div>
     </section>
 
     <section class="case-section">
@@ -88,9 +85,6 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         그래서 retry 횟수를 늘리는 대신 schema 변경 책임을 조회 경로에서 분리했습니다.
         PostgreSQL dashboard 조회에서는 schema initialization을 끄고, 이 동작이 유지되는 regression test를 추가했습니다.
       </p>
-      <div class="hero-actions">
-        <a class="button button-secondary" href="https://github.com/LIMJAELIN/Stock-manager/commit/0bcc1f0647032662d1b81c4bb27472e5ba245aee" target="_blank" rel="noreferrer">deadlock 수정 commit ↗</a>
-      </div>
     </section>
 
     <section class="case-section">
@@ -123,9 +117,6 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         핵심은 “주문 요청을 보냈다”가 아니라 <strong>프로세스가 죽거나 응답을 잃어도 외부 broker 상태와 로컬 상태를 다시 수렴시킬 수 있는가</strong>였습니다.
         response loss, restart, partial fill, late fill 같은 실패조건은 테스트로 재현했습니다.
       </p>
-      <div class="hero-actions">
-        <a class="button button-secondary" href="https://github.com/LIMJAELIN/Stock-manager/pull/136" target="_blank" rel="noreferrer">Execution Integrity PR ↗</a>
-      </div>
     </section>
 
     <section class="case-section">
@@ -139,9 +130,6 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         production deploy는 gate와 별도 검증, 명시적 배포 승인 조건을 모두 만족해야 진행하도록 연결했고,
         테스트 코드에서 workflow wiring 자체도 검사하도록 했습니다.
       </p>
-      <div class="hero-actions">
-        <a class="button button-secondary" href="https://github.com/LIMJAELIN/Stock-manager/pull/138" target="_blank" rel="noreferrer">Production Readiness PR ↗</a>
-      </div>
     </section>
 
     <section class="case-section">
@@ -152,7 +140,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         이미 계산한 결과라도 입력 근거에 문제가 발견되면 폐기하는 방향으로 평가 구조를 발전시켰습니다.
       </p>
       <div class="hero-actions">
-        <a class="button button-secondary" href={`${base}/cases/stock-manager-logic/`}>전략·평가 로직 Deep Dive →</a>
+        <a class="button button-secondary" href={`${base}/cases/stock-manager-logic/`}>전략·평가 로직 자세히 보기 →</a>
       </div>
     </section>
 
@@ -160,9 +148,6 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
       <div class="result-panel">
         <strong>Prototype → Runtime → Operations → Verification</strong>
         <p>자동매매 기능의 수보다, 실패했을 때 상태와 판단 근거가 망가지지 않도록 구조를 계속 수정한 과정이 이 프로젝트에서 가장 큰 개발 경험이었습니다.</p>
-      </div>
-      <div class="hero-actions">
-        <a class="button button-secondary" href="https://github.com/LIMJAELIN/Stock-manager" target="_blank" rel="noreferrer">Repository ↗</a>
       </div>
     </section>
   </article>
