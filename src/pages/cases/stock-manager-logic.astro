@@ -6,20 +6,20 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 <SiteLayout
   title="Stock-manager Logic Deep Dive | 임재린"
-  description="Stock-manager에서 전략 실행 결과를 검증하기 위해 Point-in-Time 데이터, no-lookahead, ghost/replay, 평가 기준을 어떻게 다뤘는지 정리한 Deep Dive입니다."
+  description="Stock-manager에서 미래정보 누수와 평가 기준 불일치를 막고, 입력 근거가 부족하면 이미 나온 결과까지 폐기한 과정을 정리한 Deep Dive입니다."
 >
   <header class="case-hero">
     <div class="shell">
       <div class="breadcrumb"><a href={`${base}/cases/stock-manager-production/`}>Case 05</a> &nbsp;/&nbsp; Logic Deep Dive</div>
       <div class="case-hero-grid">
         <div>
-          <p class="eyebrow">Deep Dive · Trading Logic / Data Integrity</p>
+          <p class="eyebrow">Deep Dive · Evaluation / Data Integrity</p>
           <h1>전략 결과를 어디까지 믿어도 되는가</h1>
           <p class="case-lead">
-            Stock-manager를 만들면서 전략 자체보다 더 오래 붙잡은 문제는
-            “이 결과가 당시 실제로 알 수 있었던 정보만으로 나온 결과인가?”였습니다.
+            Stock-manager에서 가장 오래 남은 문제는 전략 자체보다
+            “이 결과를 계산할 자격이 있는 데이터와 평가 환경인가?”였습니다.
           </p>
-          <div class="case-metric">Point-in-Time · No-lookahead · Ghost / Replay</div>
+          <div class="case-metric">Point-in-Time · Evaluation Basis · Fail-closed</div>
         </div>
 
         <dl class="case-facts">
@@ -34,135 +34,120 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
   <article class="case-body">
     <section class="case-section">
-      <h2>01. 백테스트 수익률만 보면 안 된다고 생각하게 된 이유</h2>
+      <h2>01. 좋은 숫자가 나와도 먼저 의심했습니다</h2>
       <p>
-        처음에는 전략 조건을 만들고 과거 데이터에서 결과를 확인하는 것이 중심이었습니다.
-        프로젝트가 커지면서 같은 전략이라도 어떤 데이터 시점과 체결 기준을 사용했는지에 따라 결과가 크게 달라질 수 있다는 문제가 더 중요해졌습니다.
+        초기에는 전략 조건을 만들고 과거 데이터에서 결과를 확인하는 일이 중심이었습니다.
+        하지만 과거 시점의 의사결정을 재현하려면 당시 실제로 알 수 있었던 데이터, 실행 시점, 종목 universe, 보유기간까지 함께 맞아야 했습니다.
       </p>
       <p>
-        과거 시점의 의사결정을 재현하면서 현재 시점에 이미 알고 있는 정보를 섞으면 결과는 좋아질 수 있지만 실제로는 재현할 수 없습니다.
-        그래서 전략 성과보다 먼저 <strong>그 성과를 계산해도 되는 상태인지</strong>를 확인하는 쪽으로 평가 구조를 바꿨습니다.
-      </p>
-    </section>
-
-    <section class="case-section">
-      <h2>02. 하나의 timestamp로는 부족했습니다</h2>
-      <p>데이터가 가진 시간의 의미를 세 가지로 나눴습니다.</p>
-      <div class="two-column">
-        <div class="note-box">
-          <h3>source_ts</h3>
-          <p>원천 이벤트나 가격이 실제로 발생한 시각입니다.</p>
-        </div>
-        <div class="note-box">
-          <h3>observed_at / available_ts</h3>
-          <p>시스템이 그 정보를 관찰한 시각과 실제 의사결정에 사용할 수 있게 된 시각을 따로 둡니다.</p>
-        </div>
-      </div>
-      <p>
-        셋 중 하나라도 의사결정 시점보다 미래라면 그 feature를 판단에 사용하지 않는 계약을 두었습니다.
-        뉴스·공시처럼 “발생 시각”과 “내 시스템이 알게 된 시각”이 다를 수 있는 데이터에서 특히 필요했습니다.
+        그래서 평가 구조를 “수익률을 계산하는 코드”보다 <strong>그 계산을 해도 되는 상태인지 확인하는 코드</strong> 쪽으로 점점 옮겼습니다.
       </p>
     </section>
 
     <section class="case-section">
-      <h2>03. Troubleshooting — 아직 끝나지 않은 5분봉</h2>
+      <h2>02. 미래 영역을 입력에서 아예 분리했습니다</h2>
       <p>
-        1분봉을 이용해 5분봉을 파생할 때도 미래정보가 섞일 수 있었습니다.
-        예를 들어 관찰 시점이 14:29:30이라면 14:30에 끝나는 5분봉은 아직 완성된 데이터가 아닙니다.
+        81개 거래 세션을 WARMUP 20 / TRAIN 41 / TEST 10 / HOLDOUT 10으로 고정하고,
+        실제 signal 생성 입력은 WARMUP과 TRAIN까지만 사용하도록 분리했습니다.
       </p>
-
-      <div class="flow" aria-label="파생 5분봉 no-lookahead 검증">
-        <div class="flow-step">1분봉 수집</div>
-        <div class="flow-step">5분봉 후보 생성</div>
-        <div class="flow-step emphasis">bar end ≤ observed_at ?</div>
-        <div class="flow-step">YES · 저장</div>
-        <div class="flow-step">NO · Reject</div>
+      <div class="flow" aria-label="evaluation split">
+        <div class="flow-step">WARMUP 20</div>
+        <div class="flow-step emphasis">TRAIN 41</div>
+        <div class="flow-step">TEST 10</div>
+        <div class="flow-step">HOLDOUT 10</div>
       </div>
-
       <p>
-        원천 1분봉을 필터링하는 것만으로 끝내지 않고, 그 데이터로 만든 <strong>파생 5분봉의 종료 시각도 다시 검사</strong>하도록 바꿨습니다.
-        관찰 시점 이후에 끝나는 aggregate bar는 저장하지 않고 별도 rejection 사유와 카운트를 남겼습니다.
+        중요한 건 split 이름이 아니라 검증 방식이었습니다.
+        TEST/HOLDOUT의 OHLCV를 극단적인 값으로 변조해도 TRAIN report와 artifact digest가 같아야 하는 regression test를 두었습니다.
+        “미래정보를 쓰지 않았다”고 선언하는 대신, <strong>미래 영역을 바꿔도 과거 결과가 변하지 않는지</strong>를 테스트한 것입니다.
       </p>
       <div class="hero-actions">
-        <a class="button button-secondary" href="https://github.com/LIMJAELIN/Stock-manager/commit/162a34d227851f6c5bb680865595425499435ff4" target="_blank" rel="noreferrer">no-lookahead commit ↗</a>
+        <a class="button button-secondary" href="https://github.com/LIMJAELIN/Stock-manager/pull/191" target="_blank" rel="noreferrer">Holdout isolation PR ↗</a>
       </div>
     </section>
 
     <section class="case-section">
-      <h2>04. 전략 실패와 평가 환경 실패를 분리했습니다</h2>
+      <h2>03. 데이터가 있어도 평가할 수 없는 경우가 있었습니다</h2>
       <p>
-        전략 결과가 좋지 않다고 바로 전략을 폐기하면, 실제 문제는 평가 데이터나 보유기간 기준인데 전략만 바꾸는 일이 생길 수 있습니다.
-        그래서 평가 전에 아래 조건이 맞는지 먼저 확인하도록 했습니다.
-      </p>
-      <ul>
-        <li><strong>data resolution</strong> — 원천 가격 해상도가 전략 판단과 체결 검증에 충분한가</li>
-        <li><strong>holding period</strong> — 전략의 의도와 평가 기간이 같은가</li>
-        <li><strong>universe</strong> — 후보 전체와 탈락 이유가 보존되어 있는가</li>
-        <li><strong>timestamp</strong> — 당시 사용할 수 없던 정보가 섞이지 않았는가</li>
-        <li><strong>execution</strong> — 어떤 가격과 시점으로 진입·청산을 판정했는가</li>
-        <li><strong>ledger</strong> — 장중 전략과 다일 보유 전략이 같은 원장에서 섞이지 않는가</li>
-      </ul>
-      <p>
-        조건이 준비되지 않으면 성과가 좋든 나쁘든 결론을 내리지 않고 <strong>evaluation basis not ready</strong> 상태로 남기는 방향을 택했습니다.
-      </p>
-      <div class="hero-actions">
-        <a class="button button-secondary" href="https://github.com/LIMJAELIN/Stock-manager/commit/520727577edb8ba214d279f75dde58289f238aea" target="_blank" rel="noreferrer">ghost evaluation commit ↗</a>
-      </div>
-    </section>
-
-    <section class="case-section">
-      <h2>05. Intraday 전략과 Swing 전략을 같은 방식으로 평가하지 않았습니다</h2>
-      <p>
-        장중에 진입·청산하는 전략과 며칠 들고 가는 전략은 필요한 데이터와 원장이 다릅니다.
-        장중 ghost 로그만 있는 상태에서 swing 전략의 성과까지 계산하면 overnight gap, 부분익절, 재기동 후 포지션 복원 같은 상태가 빠집니다.
-      </p>
-      <p>
-        그래서 전략의 보유기간과 ledger가 맞지 않으면 같은 scorecard에 섞지 않고,
-        multi-day lifecycle이 준비되기 전에는 swing 전략의 최종 성과 판단을 보류하도록 구분했습니다.
-      </p>
-    </section>
-
-    <section class="case-section">
-      <h2>06. Historical PIT 데이터셋을 만들었다고 바로 백테스트하지 않았습니다</h2>
-      <p>
-        이후에는 과거 시점의 데이터를 재구성하는 Historical Point-in-Time 작업까지 확장했습니다.
-        여기서도 “데이터셋 파일이 만들어졌다”와 “성과 계산에 사용할 준비가 됐다”를 같은 상태로 보지 않았습니다.
+        평가 전에는 데이터 해상도, 보유기간, universe, decision timing, execution basis, ledger가 서로 맞는지 확인합니다.
+        하나라도 중요한 mismatch가 있으면 결과를 억지로 계산하지 않고 <strong>evaluation_basis_not_ready</strong>로 닫습니다.
       </p>
       <div class="two-column">
         <div class="note-box success">
-          <h3>허용한 것</h3>
+          <h3>평가 가능한 예</h3>
           <ul>
-            <li>제한된 범위의 dataset construction</li>
-            <li>lineage / manifest 검증</li>
-            <li>누락 feature와 blocker 분류</li>
+            <li>전략 보유기간과 ledger lifecycle이 일치</li>
+            <li>가격 해상도가 체결 가정을 뒷받침</li>
+            <li>당시 사용할 수 있던 입력만 사용</li>
           </ul>
         </div>
         <div class="note-box warning">
-          <h3>계속 막아둔 것</h3>
+          <h3>평가를 막는 예</h3>
           <ul>
-            <li>historical strategy replay</li>
-            <li>performance calculation</li>
-            <li>holdout / paper / live 승격</li>
+            <li>30분 전략을 daily ledger로 평가</li>
+            <li>5분 데이터로 1분/tick 체결 정밀도를 주장</li>
+            <li>swing 전략을 장중 ghost 결과만으로 판단</li>
           </ul>
         </div>
       </div>
       <p>
-        실제 커밋에서도 dataset은 생성됐지만 `historical_pit_dataset_ready=false`, `strategy_historical_replay_allowed=false`,
-        `performance_calculation_allowed=false` 상태를 유지했습니다.
+        이 기준 때문에 “데이터가 많다”는 이유만으로 서로 다른 전략과 원장을 같은 scorecard에 넣지 않았습니다.
       </p>
       <div class="hero-actions">
-        <a class="button button-secondary" href="https://github.com/LIMJAELIN/Stock-manager/commit/c5f66781d2f06ab752d67e510b507204fe233246" target="_blank" rel="noreferrer">Historical PIT commit ↗</a>
+        <a class="button button-secondary" href="https://github.com/LIMJAELIN/Stock-manager/pull/173" target="_blank" rel="noreferrer">Evaluation Basis PR ↗</a>
       </div>
     </section>
 
     <section class="case-section">
-      <h2>07. 금융 도메인을 빼고 보면</h2>
+      <h2>04. 이미 나온 결과도 버렸습니다</h2>
+      <p>
+        TRAIN contract를 고정하고 실제 평가를 실행한 뒤, input masking에 문제가 있다는 걸 발견했습니다.
+        계산된 결과를 참고값으로 남기지 않고 <strong>결과 전체를 INVALIDATED 처리</strong>했습니다.
+      </p>
+      <p>
+        수정 후 다시 돌렸지만 이번에는 다수의 unresolved position이 남았습니다.
+        1,108건을 따로 audit하면서 “중간 mark가 없는 포지션”과 “실제 exit 자체를 알 수 없는 포지션”이 같은 상태로 취급되는 lifecycle 문제를 찾아냈습니다.
+      </p>
+      <div class="flow" aria-label="evaluation correction flow">
+        <div class="flow-step">TRAIN Run</div>
+        <div class="flow-step emphasis">Invalidation</div>
+        <div class="flow-step">Corrected Run</div>
+        <div class="flow-step">1,108 Position Audit</div>
+        <div class="flow-step">Lifecycle Fix</div>
+      </div>
+      <p>
+        lifecycle bug를 수정한 뒤에도 남은 데이터 불확실성 때문에 성과 결론은 계속 닫아뒀습니다.
+        이 프로젝트에서 중요한 건 좋은 결과를 만드는 것보다 <strong>근거가 틀렸다면 좋은 결과도 버리는 것</strong>이었습니다.
+      </p>
+      <div class="hero-actions">
+        <a class="button button-secondary" href="https://github.com/LIMJAELIN/Stock-manager/pull/211" target="_blank" rel="noreferrer">Invalidation PR ↗</a>
+        <a class="button button-secondary" href="https://github.com/LIMJAELIN/Stock-manager/pull/216" target="_blank" rel="noreferrer">Lifecycle fix PR ↗</a>
+      </div>
+    </section>
+
+    <section class="case-section">
+      <h2>05. 외부 데이터 스키마도 추측해서 맞추지 않았습니다</h2>
+      <p>
+        Historical PIT 데이터를 확보하는 과정에서도 처음부터 잘 풀리진 않았습니다.
+        초기 provider 검증에서는 162번 요청했지만 usable price row가 0건이었고, 원인은 안정적으로 사용할 종목 식별자를 찾지 못한 것이었습니다.
+      </p>
+      <p>
+        필드명을 추측해 parser를 맞추는 대신 실제 응답 evidence를 확보해 identity 의미를 확인했습니다.
+        명확한 non-cohort 값은 거르되, 애매한 값을 임의로 정상 종목 코드로 보정하지 않도록 fail-closed 규칙과 regression test를 추가한 뒤 제한된 범위의 historical acquisition으로 넘어갔습니다.
+      </p>
+      <p>
+        실시간 데이터에서도 provider가 의미 있는 시간 정보를 줄 때만 <code>source_ts</code>를 만들고,
+        시스템이 실제로 관찰한 시각은 <code>observed_at</code>으로 별도 보존했습니다.
+        “지금 읽었다”는 이유로 오래된 데이터를 새 데이터처럼 만들지 않기 위한 구분이었습니다.
+      </p>
+    </section>
+
+    <section class="case-section">
       <div class="result-panel">
-        <strong>결과보다 결과가 만들어진 조건을 먼저 검증</strong>
+        <strong>데이터가 존재한다고 해서 유효한 의사결정 데이터인 것은 아니다</strong>
         <p>
-          이 과정은 결국 시간에 따라 의미가 달라지는 데이터를 다루는 문제였습니다.
-          어떤 정보가 언제 사용 가능했는지, 서로 다른 lifecycle을 같은 기준으로 비교하고 있지는 않은지,
-          검증 조건이 부족할 때 시스템이 결론을 내리지 않도록 할 수 있는지가 핵심이었습니다.
+          Stock-manager의 평가 로직은 결국 잘못된 숫자를 만들어내는 것보다 NOT_READY를 선택하는 방향으로 발전했습니다.
+          시간, lifecycle, execution, source가 맞지 않으면 downstream 계산을 닫고, 이미 나온 결과라도 근거가 깨지면 폐기했습니다.
         </p>
       </div>
       <div class="hero-actions">
