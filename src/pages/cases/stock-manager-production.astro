@@ -69,6 +69,15 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         생성자 정의를 맞추고 관련 리스크 동작을 회귀 테스트로 보강했습니다.
         배포 절차가 끝난 것과 애플리케이션이 정상 기동한 것은 다른 상태라는 걸 실제 장애로 확인한 사례였습니다.
       </p>
+      <figure class="evidence-shot">
+        <img
+          src={`${base}/evidence/stock-manager-ecs-failure.webp`}
+          alt="ECS Task 기동 실패 원인과 수정 후 회귀 테스트를 기록한 변경 내역"
+          loading="lazy"
+          decoding="async"
+        />
+        <figcaption>ECS Task 기동 실패 원인과 수정 후 회귀 테스트 결과를 같은 변경 기록에 남겼습니다.</figcaption>
+      </figure>
     </section>
 
     <section class="case-section">
