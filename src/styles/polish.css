@@ -16,19 +16,6 @@
   background: #0d1117;
 }
 
-.evidence-panel-head {
-  padding: 10px 14px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  border-bottom: 1px solid #26384e;
-  color: #aab8c8;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: 11px;
-  line-height: 1.4;
-}
-
 .evidence-panel pre {
   margin: 0;
   padding: 18px;
@@ -45,15 +32,6 @@
   font: inherit;
   color: inherit;
   background: transparent;
-}
-
-.evidence-panel > p {
-  margin: 0;
-  padding: 12px 14px 14px;
-  border-top: 1px solid #26384e;
-  color: #aab8c8;
-  font-size: 13px;
-  line-height: 1.6;
 }
 
 .case-pager {
@@ -99,12 +77,6 @@
   .small-grid,
   .case-pager {
     grid-template-columns: 1fr;
-  }
-
-  .evidence-panel-head {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 3px;
   }
 
   .evidence-panel pre {
