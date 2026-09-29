@@ -6,7 +6,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 <SiteLayout
   title="사원등록 초기 로딩 성능 개선 | 임재린"
-  description="ERP 사원등록 기능의 최초 로딩 흐름을 구간별로 확인하고 필수 작업과 후순위 작업을 분리해 약 10초에서 3.06초 수준으로 개선한 사례입니다."
+  description="ERP 사원등록 기능의 최초 로딩 흐름을 화면 초기화·서버 조회·렌더링 구간으로 나누고 필수 작업과 후순위 작업을 분리해 약 10초에서 3.06초 수준으로 개선한 사례입니다."
 >
   <header class="case-hero">
     <div class="shell">
@@ -16,7 +16,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
           <p class="eyebrow">Case 01 · Production · Performance</p>
           <h1>사원등록 초기 로딩 성능 개선</h1>
           <p class="case-lead">
-            사원등록 기능의 최초 화면 진입 과정에서 발생하던 긴 대기시간을 구간별로 확인하고,
+            사원등록 기능의 화면과 서버 흐름을 함께 담당하면서 최초 진입 과정의 긴 대기시간을 구간별로 확인하고,
             초기 로딩에 반드시 필요한 작업과 후순위 작업을 분리해 화면이 사용 가능한 시점을 앞당긴 사례입니다.
           </p>
           <div class="case-metric">약 10초 → 3.06초</div>
@@ -26,6 +26,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
           <div><dt>Type</dt><dd>Production</dd></div>
           <div><dt>Focus</dt><dd>Initial loading</dd></div>
           <div><dt>Backend</dt><dd>Java / Spring Boot</dd></div>
+          <div><dt>Frontend</dt><dd>AngularJS</dd></div>
           <div><dt>Data</dt><dd>MyBatis / Oracle</dd></div>
         </dl>
       </div>
@@ -40,20 +41,21 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         기능 자체는 정상적으로 동작했지만 여러 조회와 화면 초기화가 한꺼번에 수행되면서 사용자가 실제 작업을 시작하기까지 약 10초의 대기시간이 발생했습니다.
       </p>
       <p>
-        문제는 특정 SQL 하나가 느린지 찾는 것보다, <strong>최초 화면이 사용 가능해질 때까지 어떤 작업이 실행되고 있는지 전체 흐름을 먼저 확인하는 것</strong>이었습니다.
+        화면부터 Spring API와 DB 처리까지 같은 업무 흐름을 함께 다루고 있었기 때문에 특정 SQL 하나만 보는 대신,
+        <strong>화면 초기화부터 서버 조회와 상세 영역 렌더링까지 사용자가 실제로 기다리는 전체 흐름</strong>을 기준으로 문제를 확인했습니다.
       </p>
     </section>
 
     <section class="case-section">
       <h2>02. 문제를 나누어 보기</h2>
       <p>
-        처음부터 DB를 원인으로 단정하지 않고 최초 진입 과정을 초기화·조회·렌더링 구간으로 나누어 확인했습니다.
+        처음부터 DB를 원인으로 단정하지 않고 최초 진입 과정을 화면 초기화·서버 조회·렌더링 구간으로 나누어 확인했습니다.
         각 단계에서 반드시 선행되어야 하는 작업과 화면이 열린 뒤 수행해도 되는 작업을 구분했습니다.
       </p>
 
       <div class="flow" aria-label="기존 초기 로딩 흐름">
         <div class="flow-step">화면 진입</div>
-        <div class="flow-step">초기화</div>
+        <div class="flow-step">화면 초기화</div>
         <div class="flow-step">필수·부가 데이터 조회</div>
         <div class="flow-step">상세 그리드 렌더링</div>
         <div class="flow-step emphasis">사용 가능</div>
@@ -151,7 +153,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         <li>성능 개선 때문에 기존 기능의 정합성이 깨지지 않는지</li>
       </ul>
       <p>
-        이후 성능 문제를 볼 때도 특정 쿼리나 코드부터 수정하기보다, 먼저 전체 요청 흐름을 나누고 실제 병목과 사용자의 대기 구간을 확인하는 방식을 우선하고 있습니다.
+        이후 성능 문제를 볼 때도 특정 쿼리나 코드부터 수정하기보다, 먼저 화면과 서버를 포함한 전체 요청 흐름을 나누고 실제 병목과 사용자의 대기 구간을 확인하는 방식을 우선하고 있습니다.
       </p>
     </section>
   </article>
