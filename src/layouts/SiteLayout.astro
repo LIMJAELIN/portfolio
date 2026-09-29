@@ -13,6 +13,7 @@ const cases = `${base}/#cases`;
 const experience = `${base}/#experience`;
 const study = `${base}/#study`;
 const about = `${base}/#about`;
+const canonicalUrl = Astro.site ? new URL(Astro.url.pathname, Astro.site).toString() : Astro.url.toString();
 
 const casePages = [
   { slug: '/cases/employee-loading-performance/', label: '01 · 사원등록 초기 로딩 성능 개선' },
@@ -35,7 +36,21 @@ const nextCase = currentCaseIndex >= 0 && currentCaseIndex < casePages.length - 
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <meta name="description" content={description} />
+    <meta name="author" content="임재린" />
     <meta name="theme-color" content="#ffffff" />
+    <link rel="canonical" href={canonicalUrl} />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23182a43'/%3E%3Ctext x='32' y='43' text-anchor='middle' font-size='34' font-family='Arial,sans-serif' font-weight='700' fill='white'%3EJ%3C/text%3E%3C/svg%3E" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="ko_KR" />
+    <meta property="og:site_name" content="임재린 Backend Portfolio" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+
     <title>{title}</title>
   </head>
   <body>
