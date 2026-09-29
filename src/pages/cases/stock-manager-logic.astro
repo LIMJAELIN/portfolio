@@ -61,15 +61,28 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         테스트·최종 검증 구간의 시가·고가·저가·종가·거래량을 극단적인 값으로 바꿔도 앞선 분석 결과와 산출물 해시가 그대로여야 하는 회귀 테스트를 두었습니다.
         “미래정보를 쓰지 않았다”고 선언하는 대신, <strong>미래 영역을 바꿔도 과거 결과가 변하지 않는지</strong>를 확인한 것입니다.
       </p>
-      <figure class="evidence-shot">
-        <img
-          src={`${base}/evidence/stock-manager-holdout-isolation.webp`}
-          alt="미래 검증 구간의 값을 바꿔도 앞선 분석 결과가 변하지 않는 회귀 테스트"
-          loading="lazy"
-          decoding="async"
-        />
-        <figcaption>미래 검증 구간의 값을 바꿔도 앞선 분석 결과와 산출물 해시가 같아야 한다는 조건을 회귀 테스트로 고정했습니다.</figcaption>
-      </figure>
+      <div class="evidence-panel" aria-label="미래 데이터 격리 회귀 테스트 발췌">
+        <div class="evidence-panel-head">
+          <span>Private repository evidence</span>
+          <span>Regression test</span>
+        </div>
+        <pre><code>{`def test_test_holdout_ohlcv_mutations_cannot_change_train_report():
+    artifact, provenance = load_pr175_price_artifact()
+    baseline = build_train_report(artifact["rows"], ...)
+    mutated = copy.deepcopy(artifact["rows"])
+    unopened = set(baseline["split"]["TEST"] + baseline["split"]["HOLDOUT"])
+
+    for row in mutated:
+        if row["session_date"] in unopened and row.get("classification") == "usable":
+            row["numeric_ohlcv"]["TDD_CLSPRC"] = "999999999"
+            row["numeric_ohlcv"]["TDD_HGPRC"] = "1000000000"
+            row["numeric_ohlcv"]["ACC_TRDVOL"] = "1"
+
+    changed = build_train_report(mutated, ...)
+    assert changed == baseline
+    assert changed["artifact_digest"] == baseline["artifact_digest"]`}</code></pre>
+        <p>미래 검증 구간의 값을 바꿔도 앞선 분석 결과와 산출물 해시가 같아야 한다는 조건을 회귀 테스트로 고정했습니다.</p>
+      </div>
     </section>
 
     <section class="case-section">
