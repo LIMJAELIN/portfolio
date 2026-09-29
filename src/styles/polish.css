@@ -1,0 +1,56 @@
+.education-copy {
+  margin: 10px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.case-pager {
+  padding: 0 0 72px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.case-pager-link {
+  min-height: 112px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: #fff;
+}
+
+.case-pager-link:hover {
+  border-color: #b8c9e8;
+}
+
+.case-pager-link span {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.case-pager-link strong {
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.case-pager-link.next {
+  text-align: right;
+  align-items: flex-end;
+}
+
+@media (max-width: 820px) {
+  .case-pager {
+    grid-template-columns: 1fr;
+    padding-bottom: 56px;
+  }
+
+  .case-pager-link.next {
+    text-align: left;
+    align-items: flex-start;
+  }
+}
