@@ -127,5 +127,13 @@ const nextCase = currentCaseIndex >= 0 && currentCaseIndex < casePages.length - 
         </div>
       </div>
     </footer>
+
+    <script is:inline>
+      document.querySelectorAll('.mobile-menu nav a').forEach((link) => {
+        link.addEventListener('click', () => {
+          link.closest('details')?.removeAttribute('open');
+        });
+      });
+    </script>
   </body>
 </html>
