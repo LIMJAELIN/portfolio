@@ -70,20 +70,19 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         배포 절차가 끝난 것과 애플리케이션이 정상 기동한 것은 다른 상태라는 걸 실제 장애로 확인한 사례였습니다.
       </p>
       <div class="evidence-panel" aria-label="ECS 장애 변경 기록 발췌">
-        <div class="evidence-panel-head">
-          <span>Private repository evidence</span>
-          <span>Incident / Regression</span>
-        </div>
-        <pre><code>{`deployment failed: tasks failed to start → rollback
+        <pre><code>{`# 장애 확인
+ECS Service Event: deployment failed: tasks failed to start → rollback
+
+# 원인
 TypeError: RiskManager.__init__() got an unexpected keyword argument
 'consecutive_loss_halt_requires_negative_day'
 
+# 수정 후 회귀 테스트
 pytest tests/test_risk_manager_daily_loss.py
 → 6 passed
 
 pytest tests/test_runtime_entry_guard.py -k "risk or guard or halt"
 → 176 passed`}</code></pre>
-        <p>ECS Task 기동 실패의 원인과 수정 후 회귀 테스트 결과를 같은 변경 기록에 남겼습니다.</p>
       </div>
     </section>
 
