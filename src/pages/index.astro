@@ -86,7 +86,8 @@ const cases = [
 
   <section class="section" id="about"><div class="shell">
     <div class="section-heading"><div><h2>About</h2></div></div>
-    <p class="about-copy">문제를 처음부터 프론트엔드·백엔드·DB 중 하나라고 단정하지 않고, 실제 요청과 데이터가 어디서 어긋나는지부터 봅니다. 로그와 DB 상태를 같이 보면서 재현 조건을 좁힌 뒤 수정하고, 비슷한 경계조건에서도 같은 문제가 다시 생기지 않는지 확인하는 편입니다.</p>
+    <h3>정상 흐름보다, 상태의 의미가 바뀌는 경계를 먼저 봅니다.</h3>
+    <p class="about-copy">날짜가 넘어가는 순간, 트랜잭션이 나뉘는 지점, Connection이 확정되는 시점, 프로세스가 재기동된 뒤처럼 작은 순서 차이가 큰 오류로 이어지는 곳을 먼저 확인합니다. 문제를 특정 계층 탓으로 정하지 않고 요청과 데이터를 끝까지 따라가 재현하며, 근거가 부족하면 결론보다 검증 조건을 먼저 만듭니다. 수정 뒤에는 같은 경계가 다른 조건에서도 버티는지 확인합니다.</p>
     <div class="hero-actions"><a class="button button-secondary" href="mailto:imjaelin@gmail.com">Email</a><a class="button button-secondary" href="https://github.com/LIMJAELIN" target="_blank" rel="noreferrer">GitHub ↗</a></div>
   </div></section>
 </SiteLayout>
