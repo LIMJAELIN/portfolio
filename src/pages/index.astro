@@ -4,6 +4,7 @@ import SiteLayout from '../layouts/SiteLayout.astro';
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const performanceCase = `${base}/cases/employee-loading-performance/`;
 const scheduleCase = `${base}/cases/work-schedule-policy/`;
+const batchCase = `${base}/cases/batch-partial-failure/`;
 
 const cases = [
   {
@@ -28,6 +29,8 @@ const cases = [
     meta: 'Transaction · Batch · Production',
     title: '배치 부분 실패 격리와 재처리',
     description: '한 처리 대상의 실패가 전체 작업을 중단시키지 않도록 업무 단위별 트랜잭션 경계를 분리하고, 실패 대상의 재처리 조건을 보완했습니다.',
+    result: '독립 트랜잭션 · 재처리',
+    href: batchCase,
   },
   {
     index: '04',
