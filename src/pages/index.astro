@@ -5,9 +5,14 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 const skillGroups = [
   {
-    title: 'Production Backend',
-    context: '비즈비 ERP · 2024.02 — Present',
-    items: ['Java 8', 'Spring Boot', 'Spring MVC', 'Spring Transaction', 'MyBatis', 'Oracle', 'HikariCP', 'Spring Scheduler'],
+    title: 'Core Backend',
+    context: '비즈비 ERP · Production',
+    items: ['Java 8', 'Spring Boot', 'Spring MVC', 'Spring Transaction', 'MyBatis', 'Spring Scheduler'],
+  },
+  {
+    title: 'Data & Integration',
+    context: 'Production + Personal',
+    items: ['Oracle', 'PostgreSQL', 'SQL', 'REST API', 'HikariCP', 'Multi DataSource'],
   },
   {
     title: 'Cloud & Operations',
@@ -18,11 +23,6 @@ const skillGroups = [
     title: 'Modern Java Hands-on',
     context: 'Backend Engineering Lab · Public',
     items: ['Java 21', 'Spring Data JPA', 'Hibernate', 'PostgreSQL', 'JUnit', 'GitHub Actions'],
-  },
-  {
-    title: 'Frontend / Full-flow',
-    context: 'ERP 기능 단위 개발',
-    items: ['AngularJS', 'JavaScript', 'Vue 3', 'TypeScript'],
   },
 ];
 
@@ -60,169 +60,172 @@ const productionCases = [
     href: `${base}/cases/multi-datasource-routing/`,
   },
 ];
+
+const moreExperience = [
+  {
+    title: 'ERP Dashboard · Vue 3 / TypeScript',
+    description: '근태 일정 위젯을 구현하고 화면의 조회 조건부터 Spring Service 분기와 MyBatis 조회 SQL까지 한 흐름으로 수정했습니다.',
+  },
+  {
+    title: '근태 알림 상태 관리',
+    description: '미출근·미퇴근 알림의 대기·발송중·성공·실패 상태를 분리하고 실패 대상 재처리와 중복 생성을 방지했습니다.',
+  },
+  {
+    title: 'eSign Integration & UI State',
+    description: '계약 생성·외부 식별자·상태·PDF 조회를 연계하고 재조회 후 선택 행이 어긋나는 문제를 업무 식별 키 기반 복원으로 수정했습니다.',
+  },
+  {
+    title: 'StockDataController',
+    description: '금융 API 기반 실시간 데이터 수집, 호출 제한·시장시간 처리와 비동기 처리 및 성능 개선 영역을 담당했습니다.',
+  },
+];
 ---
 
 <SiteLayout>
   <div class="resume-home">
-    <section class="resume-intro shell" id="top">
-      <div class="intro-main">
-        <p class="resume-kicker">Java / Spring Backend Developer</p>
-        <h1>임재린</h1>
-        <p class="intro-lead">복잡한 업무 규칙과 데이터 정합성, 트랜잭션·배치·외부 연동에서 생기는 문제를 끝까지 추적하는 백엔드 개발자입니다.</p>
-        <p class="intro-body">B2B ERP에서 인사·근태·급여 업무를 개발하며 화면부터 API·DB·배치까지 기능 단위로 구현해왔습니다. 개인 프로젝트에서는 PostgreSQL·Docker·AWS 환경을 직접 구축하고 배포 장애와 DB 동시성 문제를 다뤘습니다.</p>
-        <div class="intro-links">
-          <a href="mailto:imjaelin@gmail.com">imjaelin@gmail.com</a>
-          <a href="https://github.com/LIMJAELIN" target="_blank" rel="noreferrer">github.com/LIMJAELIN ↗</a>
-        </div>
+    <section class="resume-intro resume-sheet" id="top">
+      <p class="resume-kicker">Java / Spring Backend Developer</p>
+      <h1>임재린</h1>
+      <p class="intro-meta">2024.02 — Present · B2B ERP · Java / Spring Backend</p>
+      <p class="intro-lead">복잡한 업무 규칙과 데이터 정합성, 트랜잭션·배치·외부 연동에서 생기는 문제를 끝까지 추적합니다.</p>
+      <p class="intro-body">인사·근태·급여 ERP에서 화면부터 API·DB·배치까지 기능 단위로 개발해왔습니다. 개인 프로젝트에서는 PostgreSQL·Docker·AWS 환경을 직접 구축하고 배포 장애와 DB 동시성 문제를 다뤘습니다.</p>
+      <div class="intro-links">
+        <a href="mailto:imjaelin@gmail.com">imjaelin@gmail.com</a>
+        <a href="https://github.com/LIMJAELIN" target="_blank" rel="noreferrer">github.com/LIMJAELIN ↗</a>
       </div>
-      <aside class="intro-facts" aria-label="프로필 요약">
-        <div><span>Experience</span><strong>2024.02 — Present</strong></div>
-        <div><span>Primary</span><strong>Java · Spring · SQL</strong></div>
-        <div><span>Domain</span><strong>HR · Attendance · Payroll ERP</strong></div>
-        <div><span>Current focus</span><strong>Backend engineering evidence</strong></div>
-      </aside>
     </section>
 
-    <div class="resume-layout shell">
-      <aside class="resume-rail" id="skills">
-        <div class="rail-sticky">
-          <section class="rail-section">
-            <p class="section-label">SKILL</p>
-            {skillGroups.map((group) => (
-              <div class="skill-group">
-                <h2>{group.title}</h2>
-                <p class="skill-context">{group.context}</p>
-                <div class="skill-tags">
-                  {group.items.map((item) => <span>{item}</span>)}
-                </div>
-              </div>
-            ))}
-          </section>
+    <main class="resume-document resume-sheet">
+      <section class="resume-section" id="skills">
+        <div class="resume-section-head">
+          <p class="section-label">SKILL</p>
         </div>
-      </aside>
-
-      <main class="resume-main">
-        <section class="resume-section" id="experience">
-          <div class="resume-section-head">
-            <p class="section-label">EXPERIENCE</p>
-            <span>총 경력 · 2024.02 — Present</span>
-          </div>
-
-          <article class="career-block">
-            <div class="career-meta">
-              <span>2024.02 — Present</span>
-              <span>Production</span>
-            </div>
-            <h2>비즈비</h2>
-            <p class="career-role">ERP Developer · Java / Spring Backend</p>
-            <ul class="career-highlights">
-              <li>인사·근태·급여 ERP에서 AngularJS 화면부터 Spring API·DB 처리까지 기능 단위 End-to-End 개발</li>
-              <li>근무정책·교대·휴일·익일 처리 등 날짜와 상태가 얽힌 업무 규칙과 데이터 정합성 처리</li>
-              <li>Spring Transaction / Scheduler 기반 배치, 부분 실패 격리와 재처리 흐름 개발</li>
-              <li>외부 전자계약 REST API 6종 연동 및 회사별 Multi DataSource 환경 구성</li>
-              <li>MyBatis / Oracle 환경에서 운영 오류·성능 문제를 로그와 SQL 흐름으로 진단</li>
-            </ul>
-            <p class="stack-line"><strong>Stack</strong> Java 8 · Spring Boot · Spring MVC · Spring Transaction · MyBatis · Oracle · HikariCP · Spring Scheduler · REST API</p>
-          </article>
-        </section>
-
-        <section class="resume-section" id="projects">
-          <div class="resume-section-head">
-            <p class="section-label">SELECTED PRODUCTION CASES</p>
-            <span>상세 페이지에서 문제 → 판단 → 구현 → 결과 확인</span>
-          </div>
-
-          <div class="project-list">
-            {productionCases.map((item) => (
-              <a class="project-row" href={item.href}>
-                <div class="project-number">{item.index}</div>
-                <div class="project-content">
-                  <div class="project-eyebrow">{item.type} · Production</div>
-                  <h2>{item.title}</h2>
-                  <p>{item.summary}</p>
-                  <div class="project-tags">{item.evidence.map((tag) => <span>{tag}</span>)}</div>
-                </div>
-                <span class="project-arrow" aria-hidden="true">↗</span>
-              </a>
-            ))}
-          </div>
-        </section>
-
-        <section class="resume-section">
-          <div class="resume-section-head">
-            <p class="section-label">PERSONAL / OPERATIONS</p>
-            <span>회사 실무와 분리된 직접 구축·운영 경험</span>
-          </div>
-
-          <article class="feature-project">
-            <div class="feature-project-head">
-              <div>
-                <p class="project-eyebrow">2026.02 — Present · Personal Project</p>
-                <h2>Stock-manager</h2>
-                <p class="feature-subtitle">금융 데이터 수집·분석 및 트레이딩 시스템</p>
+        <div class="skill-matrix">
+          {skillGroups.map((group) => (
+            <div class="skill-row">
+              <div class="skill-title">
+                <h2>{group.title}</h2>
+                <p>{group.context}</p>
               </div>
-              <a href={`${base}/cases/stock-manager-production/`}>Detailed case ↗</a>
+              <p class="skill-items">{group.items.join(' · ')}</p>
             </div>
-            <ul class="career-highlights compact">
-              <li>Windows 기반 분석 프로토타입을 Docker·PostgreSQL 환경으로 재설계하고 AWS ECS/Fargate·ECR·RDS로 이전</li>
-              <li>GitHub Actions 기반 CI/CD 구성, ECS Task 기동 장애를 Service Event와 컨테이너 로그로 추적해 수정</li>
-              <li>PostgreSQL 운영 중 deadlock과 lock timeout을 구분해 rollback, 제한 재시도, 안전한 실패 처리 적용</li>
-            </ul>
-            <p class="stack-line"><strong>Stack</strong> Python · PostgreSQL · Docker · AWS ECS/Fargate · ECR · RDS · SSM · CloudWatch · GitHub Actions</p>
-          </article>
-        </section>
+          ))}
+        </div>
+      </section>
 
-        <section class="resume-section" id="study">
-          <div class="resume-section-head">
-            <p class="section-label">ENGINEERING LAB</p>
-            <span>Production JPA 경험이 아닌 hands-on evidence</span>
+      <section class="resume-section" id="experience">
+        <div class="resume-section-head">
+          <p class="section-label">EXPERIENCE</p>
+          <span>2024.02 — Present</span>
+        </div>
+
+        <article class="career-block">
+          <div class="career-meta">
+            <span>비즈비</span>
+            <span>Production</span>
           </div>
+          <h2>ERP Developer · Java / Spring Backend</h2>
+          <ul class="career-highlights">
+            <li>인사·근태·급여 ERP에서 AngularJS 화면부터 Spring API·DB 처리까지 기능 단위 End-to-End 개발</li>
+            <li>근무정책·교대·휴일·익일 처리 등 날짜와 상태가 얽힌 업무 규칙과 데이터 정합성 처리</li>
+            <li>Spring Transaction / Scheduler 기반 배치, 부분 실패 격리와 재처리 흐름 개발</li>
+            <li>외부 전자계약 REST API 6종 연동 및 회사별 Multi DataSource 환경 구성</li>
+            <li>MyBatis / Oracle 환경에서 운영 오류·성능 문제를 로그와 SQL 흐름으로 진단</li>
+          </ul>
+          <p class="stack-line"><strong>Stack</strong> Java 8 · Spring Boot · Spring MVC · Spring Transaction · MyBatis · Oracle · HikariCP · Spring Scheduler · REST API</p>
+        </article>
+      </section>
 
-          <article class="feature-project subdued">
-            <div class="feature-project-head">
-              <div>
-                <p class="project-eyebrow">Public repository · Hands-on</p>
-                <h2>Backend Engineering Lab</h2>
-                <p class="feature-subtitle">최신 Java/Spring/JPA 동작을 작은 재현 코드와 테스트로 검증</p>
+      <section class="resume-section" id="projects">
+        <div class="resume-section-head">
+          <p class="section-label">SELECTED PRODUCTION WORK</p>
+          <span>상세 페이지에서 문제 → 판단 → 구현 → 결과</span>
+        </div>
+
+        <div class="project-list">
+          {productionCases.map((item) => (
+            <a class="project-row" href={item.href}>
+              <div class="project-number">{item.index}</div>
+              <div class="project-content">
+                <div class="project-eyebrow">{item.type} · Production</div>
+                <h2>{item.title}</h2>
+                <p>{item.summary}</p>
+                <div class="project-tags">{item.evidence.map((tag) => <span>{tag}</span>)}</div>
               </div>
-              <a href="https://github.com/LIMJAELIN/backend-engineering-lab" target="_blank" rel="noreferrer">Repository ↗</a>
+              <span class="project-arrow" aria-hidden="true">↗</span>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      <section class="resume-section" id="personal-projects">
+        <div class="resume-section-head">
+          <p class="section-label">PERSONAL PROJECT</p>
+          <span>직접 구축·운영 경험</span>
+        </div>
+
+        <article class="flat-project">
+          <div class="flat-project-head">
+            <div>
+              <p class="project-eyebrow">2026.02 — Present · Personal / Operations</p>
+              <h2>Stock-manager</h2>
+              <p class="project-subtitle">금융 데이터 수집·분석 및 트레이딩 시스템</p>
             </div>
-            <div class="lab-topics">
-              <span>Persistence Context</span>
-              <span>Dirty Checking</span>
-              <span>N+1 / Fetch Join</span>
-              <span>Optimistic Lock</span>
-              <span>REQUIRED / REQUIRES_NEW</span>
+            <a href={`${base}/cases/stock-manager-production/`}>Detailed case ↗</a>
+          </div>
+          <ul class="career-highlights compact">
+            <li>Windows 기반 분석 프로토타입을 Docker·PostgreSQL 환경으로 재설계하고 AWS ECS/Fargate·ECR·RDS로 이전</li>
+            <li>GitHub Actions 기반 CI/CD 구성, ECS Task 기동 장애를 Service Event와 컨테이너 로그로 추적해 수정</li>
+            <li>PostgreSQL 운영 중 deadlock과 lock timeout을 구분해 rollback, 제한 재시도, 안전한 실패 처리 적용</li>
+          </ul>
+          <p class="stack-line"><strong>Stack</strong> Python · PostgreSQL · Docker · AWS ECS/Fargate · ECR · RDS · SSM · CloudWatch · GitHub Actions</p>
+        </article>
+      </section>
+
+      <section class="resume-section" id="study">
+        <div class="resume-section-head">
+          <p class="section-label">ENGINEERING LAB</p>
+          <span>Public hands-on evidence</span>
+        </div>
+
+        <article class="flat-project">
+          <div class="flat-project-head">
+            <div>
+              <p class="project-eyebrow">Java / Spring / JPA · Hands-on</p>
+              <h2>Backend Engineering Lab</h2>
+              <p class="project-subtitle">최신 Java/Spring/JPA 동작을 작은 재현 코드와 테스트로 검증</p>
             </div>
-            <p class="stack-line"><strong>Stack</strong> Java 21 · Spring Boot · Spring Data JPA · Hibernate · PostgreSQL · GitHub Actions</p>
-          </article>
-        </section>
-
-        <section class="resume-section">
-          <div class="resume-section-head">
-            <p class="section-label">MORE ENGINEERING EXPERIENCE</p>
+            <a href="https://github.com/LIMJAELIN/backend-engineering-lab" target="_blank" rel="noreferrer">Repository ↗</a>
           </div>
-          <div class="compact-experience-list">
-            <article><h2>ERP Dashboard · Vue 3 / TypeScript</h2><p>근태 일정 위젯을 구현하고 화면의 조회 조건부터 Spring Service 분기와 MyBatis 조회 SQL까지 한 흐름으로 수정했습니다.</p></article>
-            <article><h2>근태 알림 상태 관리</h2><p>미출근·미퇴근 알림의 대기·발송중·성공·실패 상태를 분리하고 실패 대상 재처리와 중복 생성을 방지했습니다.</p></article>
-            <article><h2>eSign Integration & UI State</h2><p>계약 생성·외부 식별자·상태·PDF 조회를 연계하고 재조회 후 선택 행이 어긋나는 문제를 업무 식별 키 기반 복원으로 수정했습니다.</p></article>
-            <article><h2>StockDataController</h2><p>금융 API 기반 실시간 데이터 수집, 호출 제한·시장시간 처리와 비동기 처리 및 성능 개선 영역을 담당했습니다.</p></article>
-          </div>
-        </section>
+          <p class="lab-topic-line">Persistence Context · Dirty Checking · N+1 / Fetch Join · Optimistic Lock · REQUIRED / REQUIRES_NEW</p>
+          <p class="stack-line"><strong>Stack</strong> Java 21 · Spring Boot · Spring Data JPA · Hibernate · PostgreSQL · GitHub Actions</p>
+        </article>
+      </section>
 
-        <section class="resume-section" id="about">
-          <div class="resume-section-head"><p class="section-label">ABOUT</p></div>
-          <div class="about-resume">
-            <h2>업무 규칙과 시스템의 경계를 끝까지 확인합니다.</h2>
-            <p>화면에서 시작된 문제가 API, DB, 트랜잭션, 배치까지 이어질 수 있다고 생각해 특정 계층만 보고 판단하지 않습니다. 날짜가 넘어가는 순간, 트랜잭션이 나뉘는 지점, Connection이 확정되는 시점, 프로세스가 재기동된 뒤처럼 상태의 의미가 바뀌는 경계를 중요하게 봅니다.</p>
-          </div>
-        </section>
+      <section class="resume-section">
+        <div class="resume-section-head">
+          <p class="section-label">OTHER EXPERIENCE</p>
+        </div>
+        <div class="other-experience-list">
+          {moreExperience.map((item) => (
+            <article>
+              <h2>{item.title}</h2>
+              <p>{item.description}</p>
+            </article>
+          ))}
+        </div>
+      </section>
 
-        <section class="resume-section education-resume">
-          <div class="resume-section-head"><p class="section-label">EDUCATION</p></div>
-          <div class="education-row"><span>재학 중 · 2028년 초 졸업 예정</span><div><h2>한국방송통신대학교</h2><p>컴퓨터과학과 · 3학년 편입</p></div></div>
-        </section>
-      </main>
-    </div>
+      <section class="resume-section education-resume">
+        <div class="resume-section-head"><p class="section-label">EDUCATION</p></div>
+        <div class="education-row">
+          <span>재학 중 · 2028년 초 졸업 예정</span>
+          <div>
+            <h2>한국방송통신대학교</h2>
+            <p>컴퓨터과학과 · 3학년 편입</p>
+          </div>
+        </div>
+      </section>
+    </main>
   </div>
 </SiteLayout>
