@@ -1,24 +1,14 @@
-.education-copy {
-  margin: 10px 0 0;
-  color: var(--muted);
-  font-size: 14px;
-}
-
-.small-grid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-/* Home / resume layout */
 .resume-home {
   background: #fff;
 }
 
+.resume-sheet {
+  width: min(calc(100% - 40px), 920px);
+  margin-inline: auto;
+}
+
 .resume-intro {
-  padding: 76px 0 54px;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 310px;
-  gap: 72px;
-  align-items: end;
+  padding: 58px 0 42px;
   border-bottom: 1px solid var(--border);
 }
 
@@ -33,37 +23,45 @@
   text-transform: uppercase;
 }
 
-.intro-main h1 {
-  margin: 8px 0 14px;
-  font-size: clamp(48px, 7vw, 72px);
-  line-height: 1;
-  letter-spacing: -0.055em;
+.resume-intro h1 {
+  margin: 8px 0 6px;
+  font-size: clamp(42px, 6vw, 58px);
+  line-height: 1.05;
+  letter-spacing: -0.05em;
+}
+
+.intro-meta {
+  margin: 0;
+  color: #98a2b3;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
 }
 
 .intro-lead {
-  max-width: 760px;
-  margin: 0;
-  font-size: clamp(21px, 2.7vw, 29px);
+  max-width: 820px;
+  margin: 24px 0 0;
+  font-size: clamp(20px, 2.2vw, 25px);
   font-weight: 760;
-  line-height: 1.5;
-  letter-spacing: -0.035em;
+  line-height: 1.55;
+  letter-spacing: -0.03em;
 }
 
 .intro-body {
-  max-width: 760px;
-  margin: 18px 0 0;
+  max-width: 800px;
+  margin: 14px 0 0;
   color: #475467;
-  font-size: 15px;
+  font-size: 14.5px;
   line-height: 1.8;
 }
 
 .intro-links {
-  margin-top: 24px;
+  margin-top: 20px;
   display: flex;
   flex-wrap: wrap;
   gap: 10px 20px;
   color: #475467;
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 700;
 }
 
@@ -71,125 +69,13 @@
   color: var(--blue);
 }
 
-.intro-facts {
-  display: grid;
-  gap: 0;
-  border-top: 1px solid #d9dee7;
-}
-
-.intro-facts > div {
-  padding: 15px 0;
-  display: grid;
-  grid-template-columns: 92px 1fr;
-  gap: 16px;
-  border-bottom: 1px solid #e9edf2;
-}
-
-.intro-facts span {
-  color: #98a2b3;
-  font-size: 11px;
-  font-weight: 750;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-
-.intro-facts strong {
-  color: #344054;
-  font-size: 12.5px;
-  line-height: 1.55;
-}
-
-.resume-layout {
-  display: grid;
-  grid-template-columns: 270px minmax(0, 1fr);
-  gap: 72px;
-  padding-top: 54px;
-  padding-bottom: 92px;
-}
-
-.resume-rail {
-  min-width: 0;
-}
-
-.rail-sticky {
-  position: sticky;
-  top: 96px;
-}
-
-.rail-section + .rail-section {
-  margin-top: 42px;
-}
-
-.skill-group {
-  padding: 18px 0;
-  border-bottom: 1px solid var(--border);
-}
-
-.skill-group:first-of-type {
-  margin-top: 8px;
-  border-top: 1px solid var(--border);
-}
-
-.skill-group h2 {
-  margin: 0;
-  font-size: 14px;
-  letter-spacing: -0.02em;
-}
-
-.skill-context {
-  margin: 5px 0 10px;
-  color: #98a2b3;
-  font-size: 10.5px;
-  line-height: 1.5;
-}
-
-.skill-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px 8px;
-}
-
-.skill-tags span {
-  color: #475467;
-  font-size: 11.5px;
-  font-weight: 650;
-}
-
-.skill-tags span:not(:last-child)::after {
-  content: '·';
-  margin-left: 8px;
-  color: #c4cad4;
-}
-
-.rail-note {
-  padding: 18px;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  background: var(--surface);
-}
-
-.rail-note .section-label {
-  margin-bottom: 10px;
-}
-
-.rail-note p:not(.section-label) {
-  margin: 7px 0 0;
-  color: #667085;
-  font-size: 11.5px;
-  line-height: 1.65;
-}
-
-.rail-note strong {
-  color: #344054;
-}
-
-.resume-main {
-  min-width: 0;
+.resume-document {
+  padding: 44px 0 84px;
 }
 
 .resume-section {
-  padding: 0 0 56px;
-  margin-bottom: 56px;
+  padding: 0 0 46px;
+  margin-bottom: 46px;
   border-bottom: 1px solid var(--border);
 }
 
@@ -198,11 +84,11 @@
 }
 
 .resume-section-head {
-  margin-bottom: 24px;
+  margin-bottom: 22px;
   display: flex;
   justify-content: space-between;
-  gap: 24px;
   align-items: baseline;
+  gap: 24px;
 }
 
 .resume-section-head > span {
@@ -211,11 +97,44 @@
   text-align: right;
 }
 
+.skill-matrix {
+  border-top: 1px solid #d9dee7;
+}
+
+.skill-row {
+  display: grid;
+  grid-template-columns: 210px minmax(0, 1fr);
+  gap: 34px;
+  padding: 18px 0;
+  border-bottom: 1px solid #e9edf2;
+  align-items: start;
+}
+
+.skill-title h2 {
+  margin: 0;
+  font-size: 14px;
+  letter-spacing: -0.02em;
+}
+
+.skill-title p {
+  margin: 4px 0 0;
+  color: #98a2b3;
+  font-size: 10.5px;
+  line-height: 1.5;
+}
+
+.skill-items {
+  margin: 0;
+  color: #475467;
+  font-size: 12.5px;
+  font-weight: 650;
+  line-height: 1.75;
+}
+
 .career-block h2,
-.feature-project h2,
-.about-resume h2,
+.flat-project h2,
+.other-experience-list h2,
 .education-row h2,
-.compact-experience-list h2,
 .project-row h2 {
   margin: 0;
   letter-spacing: -0.035em;
@@ -239,25 +158,19 @@
 }
 
 .career-block h2 {
-  font-size: 28px;
-}
-
-.career-role {
-  margin: 3px 0 0;
-  color: #667085;
-  font-size: 14px;
-  font-weight: 700;
+  font-size: 27px;
 }
 
 .career-highlights {
-  margin: 22px 0 0;
+  margin: 20px 0 0;
   padding-left: 18px;
   color: #475467;
-  font-size: 14px;
+  font-size: 13.5px;
+  line-height: 1.75;
 }
 
 .career-highlights li + li {
-  margin-top: 9px;
+  margin-top: 8px;
 }
 
 .career-highlights.compact {
@@ -265,8 +178,8 @@
 }
 
 .stack-line {
-  margin: 22px 0 0;
-  padding-top: 16px;
+  margin: 20px 0 0;
+  padding-top: 15px;
   border-top: 1px dashed #d9dee7;
   color: #667085;
   font-size: 11.5px;
@@ -286,11 +199,10 @@
 }
 
 .project-row {
-  position: relative;
   display: grid;
-  grid-template-columns: 42px minmax(0, 1fr) 28px;
+  grid-template-columns: 42px minmax(0, 1fr) 24px;
   gap: 16px;
-  padding: 24px 0;
+  padding: 22px 0;
   border-bottom: 1px solid #e9edf2;
   transition: transform 160ms ease, border-color 160ms ease;
 }
@@ -310,31 +222,29 @@
 
 .project-row h2 {
   margin-top: 4px;
-  font-size: 19px;
+  font-size: 18.5px;
   line-height: 1.45;
 }
 
 .project-row p {
-  margin: 8px 0 0;
+  margin: 7px 0 0;
   color: #667085;
-  font-size: 13px;
-  line-height: 1.75;
+  font-size: 12.8px;
+  line-height: 1.7;
 }
 
-.project-tags,
-.lab-topics {
-  margin-top: 13px;
+.project-tags {
+  margin-top: 12px;
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
 }
 
-.project-tags span,
-.lab-topics span {
+.project-tags span {
   display: inline-flex;
   align-items: center;
-  min-height: 25px;
-  padding: 3px 8px;
+  min-height: 24px;
+  padding: 2px 8px;
   border: 1px solid #e3e7ed;
   border-radius: 999px;
   background: #fafbfc;
@@ -344,9 +254,9 @@
 }
 
 .project-arrow {
-  padding-top: 21px;
+  padding-top: 19px;
   color: #98a2b3;
-  font-size: 15px;
+  font-size: 14px;
   text-align: right;
 }
 
@@ -355,87 +265,64 @@
   color: var(--blue);
 }
 
-.feature-project {
-  padding: 26px;
-  border: 1px solid #dfe4eb;
-  border-radius: 12px;
-  background: #fff;
+.flat-project {
+  padding: 0;
 }
 
-.feature-project.subdued {
-  background: #fafbfc;
-}
-
-.feature-project-head {
+.flat-project-head {
   display: flex;
-  align-items: flex-start;
   justify-content: space-between;
-  gap: 22px;
+  align-items: flex-start;
+  gap: 24px;
 }
 
-.feature-project h2 {
+.flat-project h2 {
   margin-top: 4px;
-  font-size: 23px;
+  font-size: 22px;
 }
 
-.feature-subtitle {
+.project-subtitle {
   margin: 5px 0 0;
   color: #667085;
   font-size: 13px;
 }
 
-.feature-project-head > a {
+.flat-project-head > a {
   flex: 0 0 auto;
   color: var(--blue);
   font-size: 11.5px;
   font-weight: 800;
 }
 
-.compact-experience-list {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+.lab-topic-line {
+  margin: 18px 0 0;
+  color: #475467;
+  font-size: 12.5px;
+  line-height: 1.75;
+}
+
+.other-experience-list {
   border-top: 1px solid #d9dee7;
 }
 
-.compact-experience-list article {
-  padding: 22px 22px 22px 0;
+.other-experience-list article {
+  display: grid;
+  grid-template-columns: 250px minmax(0, 1fr);
+  gap: 28px;
+  padding: 18px 0;
   border-bottom: 1px solid #e9edf2;
 }
 
-.compact-experience-list article:nth-child(odd) {
-  padding-right: 26px;
-  border-right: 1px solid #e9edf2;
-}
-
-.compact-experience-list article:nth-child(even) {
-  padding-left: 26px;
-}
-
-.compact-experience-list h2 {
-  font-size: 15px;
+.other-experience-list h2 {
+  font-size: 14.5px;
   line-height: 1.5;
 }
 
-.compact-experience-list p {
-  margin: 8px 0 0;
+.other-experience-list p {
+  margin: 0;
   color: #667085;
   font-size: 12px;
   line-height: 1.7;
-}
-
-.about-resume {
-  max-width: 720px;
-}
-
-.about-resume h2 {
-  font-size: 22px;
-}
-
-.about-resume p {
-  margin: 12px 0 0;
-  color: #667085;
-  font-size: 14px;
-  line-height: 1.85;
 }
 
 .education-resume {
@@ -445,8 +332,8 @@
 
 .education-row {
   display: grid;
-  grid-template-columns: 200px 1fr;
-  gap: 24px;
+  grid-template-columns: 220px 1fr;
+  gap: 28px;
   align-items: start;
 }
 
@@ -531,74 +418,28 @@
   align-items: flex-end;
 }
 
-@media (max-width: 960px) {
-  .resume-intro {
-    grid-template-columns: 1fr;
-    gap: 34px;
-  }
-
-  .intro-facts {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    overflow: hidden;
-  }
-
-  .intro-facts > div {
-    padding: 14px;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .resume-layout {
-    grid-template-columns: 220px minmax(0, 1fr);
-    gap: 42px;
-  }
-}
-
 @media (max-width: 760px) {
   .resume-intro {
-    padding: 54px 0 42px;
+    padding: 44px 0 34px;
   }
 
-  .intro-main h1 {
-    font-size: 48px;
+  .resume-intro h1 {
+    font-size: 46px;
   }
 
   .intro-lead {
-    font-size: 21px;
+    margin-top: 20px;
+    font-size: 20px;
   }
 
-  .intro-facts {
-    grid-template-columns: 1fr;
-  }
-
-  .resume-layout {
-    display: block;
-    padding-top: 38px;
+  .resume-document {
+    padding-top: 36px;
     padding-bottom: 64px;
   }
 
-  .rail-sticky {
-    position: static;
-  }
-
-  .resume-rail {
-    margin-bottom: 56px;
-    padding-bottom: 42px;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .skill-group {
-    padding: 15px 0;
-  }
-
-  .rail-note {
-    margin-top: 28px;
-  }
-
   .resume-section {
-    margin-bottom: 44px;
-    padding-bottom: 44px;
+    margin-bottom: 40px;
+    padding-bottom: 40px;
   }
 
   .resume-section-head {
@@ -611,55 +452,29 @@
     text-align: left;
   }
 
-  .career-block h2 {
-    font-size: 25px;
-  }
-
-  .project-row {
-    grid-template-columns: 30px minmax(0, 1fr) 20px;
-    gap: 10px;
-  }
-
-  .feature-project {
-    padding: 20px;
-  }
-
-  .feature-project-head {
-    display: block;
-  }
-
-  .feature-project-head > a {
-    display: inline-block;
-    margin-top: 14px;
-  }
-
-  .compact-experience-list {
-    grid-template-columns: 1fr;
-  }
-
-  .compact-experience-list article,
-  .compact-experience-list article:nth-child(odd),
-  .compact-experience-list article:nth-child(even) {
-    padding: 18px 0;
-    border-right: 0;
-  }
-
+  .skill-row,
+  .other-experience-list article,
   .education-row {
     grid-template-columns: 1fr;
     gap: 8px;
   }
 
-  .small-grid,
+  .project-row {
+    grid-template-columns: 30px minmax(0, 1fr) 18px;
+    gap: 10px;
+  }
+
+  .flat-project-head {
+    display: block;
+  }
+
+  .flat-project-head > a {
+    display: inline-block;
+    margin-top: 14px;
+  }
+
   .case-pager {
     grid-template-columns: 1fr;
-  }
-
-  .evidence-panel pre {
-    padding: 15px;
-    font-size: 11.5px;
-  }
-
-  .case-pager {
     padding-bottom: 56px;
   }
 
