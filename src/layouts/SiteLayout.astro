@@ -13,7 +13,6 @@ const experience = `${base}/#experience`;
 const projects = `${base}/#projects`;
 const skills = `${base}/#skills`;
 const study = `${base}/#study`;
-const about = `${base}/#about`;
 const canonicalUrl = Astro.site ? new URL(Astro.url.pathname, Astro.site).toString() : Astro.url.toString();
 
 const casePages = [
@@ -26,6 +25,7 @@ const casePages = [
 ];
 
 const currentPath = Astro.url.pathname;
+const isHome = currentPath === home || currentPath === base || currentPath === '/';
 const currentCaseIndex = casePages.findIndex((item) => currentPath.endsWith(item.slug));
 const previousCase = currentCaseIndex > 0 ? casePages[currentCaseIndex - 1] : null;
 const nextCase = currentCaseIndex >= 0 && currentCaseIndex < casePages.length - 1 ? casePages[currentCaseIndex + 1] : null;
@@ -55,33 +55,35 @@ const nextCase = currentCaseIndex >= 0 && currentCaseIndex < casePages.length - 
     <title>{title}</title>
   </head>
   <body>
-    <header class="site-header">
+    <header class:list={['site-header', isHome && 'home-header']}>
       <div class="shell header-inner">
         <a class="brand" href={home}>임재린</a>
 
-        <nav class="desktop-nav" aria-label="주요 메뉴">
-          <a href={experience}>Experience</a>
-          <a href={projects}>Projects</a>
-          <a href={skills}>Skills</a>
-          <a href={study}>Lab</a>
-          <a href={about}>About</a>
-        </nav>
+        {!isHome && (
+          <nav class="desktop-nav" aria-label="주요 메뉴">
+            <a href={experience}>Experience</a>
+            <a href={projects}>Projects</a>
+            <a href={skills}>Skills</a>
+            <a href={study}>Lab</a>
+          </nav>
+        )}
 
         <div class="header-actions">
           <a class="header-link" href="https://github.com/LIMJAELIN" target="_blank" rel="noreferrer">GitHub ↗</a>
-          <details class="mobile-menu">
-            <summary aria-label="메뉴 열기">
-              <span></span><span></span><span></span>
-            </summary>
-            <nav aria-label="모바일 메뉴">
-              <a href={experience}>Experience</a>
-              <a href={projects}>Projects</a>
-              <a href={skills}>Skills</a>
-              <a href={study}>Lab</a>
-              <a href={about}>About</a>
-              <a href="https://github.com/LIMJAELIN" target="_blank" rel="noreferrer">GitHub ↗</a>
-            </nav>
-          </details>
+          {!isHome && (
+            <details class="mobile-menu">
+              <summary aria-label="메뉴 열기">
+                <span></span><span></span><span></span>
+              </summary>
+              <nav aria-label="모바일 메뉴">
+                <a href={experience}>Experience</a>
+                <a href={projects}>Projects</a>
+                <a href={skills}>Skills</a>
+                <a href={study}>Lab</a>
+                <a href="https://github.com/LIMJAELIN" target="_blank" rel="noreferrer">GitHub ↗</a>
+              </nav>
+            </details>
+          )}
         </div>
       </div>
     </header>
@@ -99,7 +101,7 @@ const nextCase = currentCaseIndex >= 0 && currentCaseIndex < casePages.length - 
           ) : (
             <a class="case-pager-link previous" href={projects}>
               <span>← 목록</span>
-              <strong>Selected Production Cases</strong>
+              <strong>Selected Production Work</strong>
             </a>
           )}
 
@@ -111,7 +113,7 @@ const nextCase = currentCaseIndex >= 0 && currentCaseIndex < casePages.length - 
           ) : (
             <a class="case-pager-link next" href={projects}>
               <span>목록 →</span>
-              <strong>Selected Production Cases</strong>
+              <strong>Selected Production Work</strong>
             </a>
           )}
         </nav>
