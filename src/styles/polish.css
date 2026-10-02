@@ -1,3 +1,16 @@
+.home-header {
+  position: static;
+  backdrop-filter: none;
+}
+
+.home-header .header-inner {
+  grid-template-columns: 1fr auto;
+}
+
+.home-header .header-actions {
+  justify-self: end;
+}
+
 .resume-home {
   background: #fff;
 }
