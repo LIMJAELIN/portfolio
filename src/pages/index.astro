@@ -6,7 +6,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const skillGroups = [
   {
     title: '백엔드',
-    items: ['Java 8', 'Spring Boot', 'Spring MVC', 'Spring Transaction', 'MyBatis', 'Spring Scheduler'],
+    items: ['Java', 'Spring Boot', 'Spring MVC', 'Spring Transaction', 'MyBatis', 'Spring Scheduler'],
   },
   {
     title: '데이터베이스·연동',
@@ -18,7 +18,7 @@ const skillGroups = [
   },
   {
     title: '학습 및 개인 프로젝트',
-    items: ['Java 21 / 25', 'Spring Boot 4', 'Spring Data JPA', 'Hibernate', 'JDBC', 'PostgreSQL'],
+    items: ['Java', 'Spring Boot', 'Spring Data JPA', 'Hibernate', 'JDBC', 'PostgreSQL'],
   },
 ];
 
@@ -68,7 +68,7 @@ const productionCases = [
     index: '06',
     type: 'System Integration',
     stage: '회사 업무',
-    title: 'Windows 근태 수집 앱부터 ERP까지 연동',
+    title: 'Windows 근태 수집 앱과 ERP 연동',
     summary: '외부 장비 DB 조회, 로컬 SQLite 동기화, 시간대 오류 수정과 별도 Spring 서버·ERP 데이터 계약 변경에 기여했습니다.',
     evidence: ['Electron / Node.js', 'PostgreSQL / SQLite', '시간대 / API 계약'],
     href: `${base}/cases/attendance-integration/`,
@@ -117,9 +117,9 @@ const moreExperience = [
         <h2 id="featured-title">먼저 볼 수 있는 업무 경험</h2>
         <p class="featured-intro">현장의 요구사항을 업무 규칙과 데이터 처리로 연결한 사례입니다.</p>
         <div class="featured-grid">
-          <a href={`${base}/cases/work-schedule-policy/`}><span>01 · 근무정책</span><strong>자동 생성과 담당자의 수정이 함께 유지되도록</strong><p>근무유형별 계획을 만들면서 담당자가 조정한 내용을 배치에서 보호했습니다.</p><b>근무계획 사례 보기 ↗</b></a>
-          <a href={`${base}/cases/month-close-rebuild/`}><span>02 · 마감과 재집계</span><strong>마감 후 바뀐 근태를 필요한 날짜만 다시 집계</strong><p>원천 데이터 변경을 확인하고 담당자가 선택한 날짜의 재집계를 연결했습니다.</p><b>월근태 사례 보기 ↗</b></a>
-          <a href={`${base}/cases/attendance-integration/`}><span>03 · 외부 연동</span><strong>장비 출입기록을 수집해 ERP에서 활용</strong><p>Windows 수집 앱의 조회·동기화·전송과 ERP 연동을 다뤘습니다.</p><b>근태 연동 사례 보기 ↗</b></a>
+          <a href={`${base}/cases/work-schedule-policy/`}><span>근무정책</span><strong>{productionCases[1].title}</strong><p>근무유형별 계획을 만들면서 담당자가 조정한 내용을 배치에서 보호했습니다.</p><b>근무계획 사례 보기 ↗</b></a>
+          <a href={`${base}/cases/month-close-rebuild/`}><span>마감과 재집계</span><strong>{productionCases[4].title}</strong><p>원천 데이터 변경을 확인하고 담당자가 선택한 날짜의 재집계를 연결했습니다.</p><b>월근태 사례 보기 ↗</b></a>
+          <a href={`${base}/cases/attendance-integration/`}><span>외부 연동</span><strong>{productionCases[5].title}</strong><p>Windows 수집 앱의 조회·동기화·전송과 ERP 연동을 다뤘습니다.</p><b>근태 연동 사례 보기 ↗</b></a>
         </div>
       </section>
       <section class="resume-section" id="skills">
@@ -158,7 +158,7 @@ const moreExperience = [
             <li>외부 전자계약 REST API 6종 연동 및 회사별 Multi DataSource 환경 구성</li>
             <li>Electron 기반 Windows 근태 수집 앱의 외부 DB 연동·SQLite 동기화·시간대 오류 및 고객 환경 연결 문제 대응</li>
           </ul>
-          <p class="stack-line"><strong>Stack</strong> Java 8 · Spring Boot · Spring MVC · Spring Transaction · MyBatis · Oracle · HikariCP · Spring Scheduler · REST API</p>
+          <p class="stack-line"><strong>Stack</strong> Java · Spring Boot · Spring MVC · Spring Transaction · MyBatis · Oracle · HikariCP · Spring Scheduler · REST API</p>
         </article>
       </section>
 
@@ -217,7 +217,7 @@ const moreExperience = [
             <li>별도 읽기 전용 DB 연결, 응답 상태·필드 검증과 React 관제 UI 구성</li>
             <li>합성 데이터를 이용해 PostgreSQL → Spring API → 웹 화면의 연동 흐름 검증</li>
           </ul>
-          <p class="stack-line"><strong>Stack</strong> Java 25 · Spring Boot · JDBC · PostgreSQL · React · TypeScript</p>
+          <p class="stack-line"><strong>Stack</strong> Java · Spring Boot · JDBC · PostgreSQL · React · TypeScript</p>
         </article>
 
         <article class="flat-project">
@@ -254,7 +254,7 @@ const moreExperience = [
             <a href="https://github.com/LIMJAELIN/backend-engineering-lab" target="_blank" rel="noreferrer">학습 저장소 보기 ↗</a>
           </div>
           <p class="lab-topic-line">Persistence Context · Dirty Checking · N+1 / Fetch Join · Optimistic Lock · REQUIRED / REQUIRES_NEW</p>
-          <p class="stack-line"><strong>Stack</strong> Java 21 · Spring Boot · Spring Data JPA · Hibernate · PostgreSQL · GitHub Actions</p>
+          <p class="stack-line"><strong>Stack</strong> Java · Spring Boot · Spring Data JPA · Hibernate · PostgreSQL · GitHub Actions</p>
         </article>
       </section>
 
