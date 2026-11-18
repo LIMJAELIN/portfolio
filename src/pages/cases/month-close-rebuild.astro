@@ -58,14 +58,6 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     <section class="case-section">
       <h2>03. 트랜잭션 경계 — 재집계 경로에 따라 다름</h2>
       <p>마감 후 변경 적용 기능과 별도로, 사원·근무일별 대상으로 처리하는 재집계 API에서는 <code>REQUIRES_NEW</code> 트랜잭션을 사용합니다. 각 대상을 성공·건너뜀·실패로 분리해 기록할 수 있지만, <strong>마감 후 선택 적용과 대상별 독립 처리 API는 서로 다른 트랜잭션 경로</strong>입니다.</p>
-      <p>업무 동작이 유사하더라도 동일한 원자성 보장을 가진 것처럼 묶어 설명하지 않는 점을 중요하게 봤습니다.</p>
-    </section>
-
-    <section class="case-section">
-      <div class="result-panel">
-        <strong>검증된 범위와 남은 확인</strong>
-        <p>Java/Spring·MyBatis 및 화면 소스 변경은 Git 이력으로 확인했습니다. 실제 운영 반영, 재집계 처리량, 오류율 개선, 동시 수정 상황의 실측 결과는 확보되지 않아 성과 수치로 제시하지 않습니다.</p>
-      </div>
     </section>
   </article>
 </SiteLayout>
