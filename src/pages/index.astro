@@ -22,7 +22,7 @@ const skillGroups = [
   {
     title: 'Modern Java Hands-on',
     context: 'Backend Engineering Lab · Public',
-    items: ['Java 21', 'Spring Data JPA', 'Hibernate', 'PostgreSQL', 'JUnit', 'GitHub Actions'],
+    items: ['Java 21 / 25', 'Spring Boot 4', 'Spring Data JPA / Hibernate (Lab)', 'JDBC (Observatory)', 'PostgreSQL', 'GitHub Actions'],
   },
 ];
 
@@ -59,6 +59,24 @@ const productionCases = [
     evidence: ['3 DataSources', 'LazyConnectionDataSourceProxy', 'HikariCP'],
     href: `${base}/cases/multi-datasource-routing/`,
   },
+  {
+    index: '05',
+    type: 'Business Workflow',
+    stage: 'Company / Code-verified',
+    title: '월근태 마감 후 변경 감지와 선택 재집계',
+    summary: '마감된 근태에서 4종 원천 변경을 감지·확인하고 데이터 잠금과 선택 날짜 재집계 흐름을 Spring/MyBatis로 구현했습니다.',
+    evidence: ['4종 원천 변경 감지', 'FOR UPDATE', '마감 상태 / 정합성'],
+    href: `${base}/cases/month-close-rebuild/`,
+  },
+  {
+    index: '06',
+    type: 'System Integration',
+    stage: 'Company / Code-verified',
+    title: 'Windows 근태 수집 앱부터 ERP까지 연동',
+    summary: '외부 장비 DB 조회, 로컬 SQLite 동기화, 시간대 오류 수정과 별도 Spring 서버·ERP 데이터 계약 변경에 기여했습니다.',
+    evidence: ['Electron / Node.js', 'PostgreSQL / SQLite', '시간대 / API 계약'],
+    href: `${base}/cases/attendance-integration/`,
+  },
 ];
 
 const moreExperience = [
@@ -87,8 +105,8 @@ const moreExperience = [
       <p class="resume-kicker">Java / Spring Backend Developer</p>
       <h1>임재린</h1>
       <p class="intro-meta">2024.02 — Present · B2B ERP · Java / Spring Backend</p>
-      <p class="intro-lead">복잡한 업무 규칙과 데이터 정합성, 트랜잭션·배치·외부 연동에서 생기는 문제를 끝까지 추적합니다.</p>
-      <p class="intro-body">인사·근태·급여 ERP에서 화면부터 API·DB·배치까지 기능 단위로 개발해왔습니다. 개인 프로젝트에서는 PostgreSQL·Docker·AWS 환경을 직접 구축하고 배포 장애와 DB 동시성 문제를 다뤘습니다.</p>
+      <p class="intro-lead">복잡한 업무 규칙과 데이터 정합성, 시스템 간 데이터 연동에서 발생하는 문제를 근거로 해결합니다.</p>
+      <p class="intro-body">인사·근태·급여 ERP에서 화면·Spring API·DB·배치를 개발하고, Windows 근태 수집 프로그램과 별도 서버의 연동도 담당했습니다. 개인 프로젝트에서는 AWS/PostgreSQL 운영 장애와 Java/Spring 관제 API·합성 데이터 검증을 다뤘습니다.</p>
       <div class="intro-links">
         <a href="mailto:imjaelin@gmail.com">imjaelin@gmail.com</a>
         <a href="https://github.com/LIMJAELIN" target="_blank" rel="noreferrer">github.com/LIMJAELIN ↗</a>
@@ -127,10 +145,11 @@ const moreExperience = [
           <h2>ERP Developer · Java / Spring Backend</h2>
           <ul class="career-highlights">
             <li>인사·근태·급여 ERP에서 AngularJS 화면부터 Spring API·DB 처리까지 기능 단위 End-to-End 개발</li>
-            <li>근무정책·교대·휴일·익일 처리 등 날짜와 상태가 얽힌 업무 규칙과 데이터 정합성 처리</li>
+            <li>근무정책·교대·휴일·익일 처리와 계획 변경 후 재계산 등 날짜·상태 기반 업무 규칙 구현</li>
+            <li>월근태 마감 후 4종 원천 변경 감지·확인, 데이터 잠금과 선택 날짜 재집계 흐름 구현</li>
             <li>Spring Transaction / Scheduler 기반 배치, 부분 실패 격리와 재처리 흐름 개발</li>
             <li>외부 전자계약 REST API 6종 연동 및 회사별 Multi DataSource 환경 구성</li>
-            <li>MyBatis / Oracle 환경에서 운영 오류·성능 문제를 로그와 SQL 흐름으로 진단</li>
+            <li>Electron 기반 Windows 근태 수집 앱의 외부 DB 연동·SQLite 동기화·시간대 오류 및 고객 환경 연결 문제 대응</li>
           </ul>
           <p class="stack-line"><strong>Stack</strong> Java 8 · Spring Boot · Spring MVC · Spring Transaction · MyBatis · Oracle · HikariCP · Spring Scheduler · REST API</p>
         </article>
@@ -147,7 +166,7 @@ const moreExperience = [
             <a class="project-row" href={item.href}>
               <div class="project-number">{item.index}</div>
               <div class="project-content">
-                <div class="project-eyebrow">{item.type} · Production</div>
+                <div class="project-eyebrow">{item.type} · {item.stage || 'Production'}</div>
                 <h2>{item.title}</h2>
                 <p>{item.summary}</p>
                 <div class="project-tags">{item.evidence.map((tag) => <span>{tag}</span>)}</div>
@@ -161,15 +180,45 @@ const moreExperience = [
       <section class="resume-section" id="personal-projects">
         <div class="resume-section-head">
           <p class="section-label">PERSONAL PROJECT</p>
-          <span>직접 구축·운영 경험</span>
+          <span>개인 연구·검증과 이전 운영 경험을 분리 표기</span>
         </div>
 
         <article class="flat-project">
           <div class="flat-project-head">
             <div>
-              <p class="project-eyebrow">2026.02 — Present · Personal / Operations</p>
-              <h2>Stock-manager</h2>
-              <p class="project-subtitle">금융 데이터 수집·분석 및 트레이딩 시스템</p>
+              <p class="project-eyebrow">2026 — Present · Personal / Research</p>
+              <h2>StratDock</h2>
+              <p class="project-subtitle">전략 신호 검증·오프라인 GHOST 가상 원장·상태 복원</p>
+            </div>
+          </div>
+          <ul class="career-highlights compact">
+            <li>동결된 신호 계약을 기반으로 이벤트 중복·시간 역행·출처 불일치와 저장 상태 복원 조건을 검증</li>
+            <li>연구 및 가상 실행 경로를 개발·검증 중이며 PAPER/LIVE 주문과 브로커 연결은 비활성</li>
+          </ul>
+          <p class="stack-line"><strong>Stack</strong> Python · PostgreSQL · QuantConnect · pytest · GitHub Actions</p>
+        </article>
+
+        <article class="flat-project">
+          <div class="flat-project-head">
+            <div>
+              <p class="project-eyebrow">2026 — Present · Personal / Java Backend</p>
+              <h2>StratDock-Observatory</h2>
+              <p class="project-subtitle">Java/Spring 기반 읽기 전용 관제 앱과 응답 계약 검증</p>
+            </div>
+          </div>
+          <ul class="career-highlights compact">
+            <li>별도 읽기 전용 DB 연결, 응답 상태·필드 검증과 React 관제 UI 구성</li>
+            <li>합성 PostgreSQL → Spring API → 웹 통합 경로 검증; 실제 계좌·운용 자료 연결 또는 운영 배포 성과는 아님</li>
+          </ul>
+          <p class="stack-line"><strong>Stack</strong> Java 25 · Spring Boot · JDBC · PostgreSQL · React · TypeScript</p>
+        </article>
+
+        <article class="flat-project">
+          <div class="flat-project-head">
+            <div>
+              <p class="project-eyebrow">2026.02 시작 · Legacy / Previous Operations</p>
+              <h2>Stock-manager (이전 프로젝트)</h2>
+              <p class="project-subtitle">StratDock 전환 전 금융 데이터 시스템의 클라우드 배포·장애 대응</p>
             </div>
             <a href={`${base}/cases/stock-manager-production/`}>Detailed case ↗</a>
           </div>
