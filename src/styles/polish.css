@@ -208,6 +208,14 @@
   font-size: 27px;
 }
 
+.career-intro {
+  max-width: 740px;
+  margin: 16px 0 0;
+  color: #344054;
+  font-size: 15px;
+  line-height: 1.8;
+}
+
 .career-highlights {
   margin: 20px 0 0;
   padding-left: 18px;
