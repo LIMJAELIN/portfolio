@@ -61,31 +61,27 @@ const nextCase = currentCaseIndex >= 0 && currentCaseIndex < casePages.length - 
       <div class="shell header-inner">
         <a class="brand" href={home}>임재린</a>
 
-        {!isHome && (
           <nav class="desktop-nav" aria-label="주요 메뉴">
-            <a href={experience}>Experience</a>
-            <a href={projects}>Projects</a>
-            <a href={skills}>Skills</a>
-            <a href={study}>Lab</a>
+            <a href={home}>소개</a>
+            <a href={projects}>실무 사례</a>
+            <a href={`${base}/#personal-projects`}>개인 프로젝트</a>
+            <a href={skills}>기술</a>
           </nav>
-        )}
 
         <div class="header-actions">
           <a class="header-link" href="https://github.com/LIMJAELIN" target="_blank" rel="noreferrer">GitHub ↗</a>
-          {!isHome && (
             <details class="mobile-menu">
               <summary aria-label="메뉴 열기">
                 <span></span><span></span><span></span>
               </summary>
               <nav aria-label="모바일 메뉴">
-                <a href={experience}>Experience</a>
-                <a href={projects}>Projects</a>
-                <a href={skills}>Skills</a>
-                <a href={study}>Lab</a>
+                <a href={home}>소개</a>
+                <a href={projects}>실무 사례</a>
+                <a href={`${base}/#personal-projects`}>개인 프로젝트</a>
+                <a href={skills}>기술</a>
                 <a href="https://github.com/LIMJAELIN" target="_blank" rel="noreferrer">GitHub ↗</a>
               </nav>
             </details>
-          )}
         </div>
       </div>
     </header>

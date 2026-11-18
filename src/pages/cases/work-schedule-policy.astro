@@ -10,7 +10,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 >
   <header class="case-hero">
     <div class="shell">
-      <div class="breadcrumb"><a href={`${base}/#cases`}>Cases</a> &nbsp;/&nbsp; 02. 근무정책 기반 근무계획 생성</div>
+      <div class="breadcrumb"><a href={`${base}/#projects`}>사례 목록</a> &nbsp;/&nbsp; 근무정책 기반 근무계획 생성</div>
       <div class="case-hero-grid">
         <div>
           <p class="eyebrow">Case 02 · Production · Business Logic</p>
@@ -42,6 +42,14 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
       <p>
         실제 문제도 대부분 <strong>날짜가 바뀌는 순간, 값이 비어 있어도 정상인 날, 시작값과 날짜별 계산이 충돌하는 순간</strong>에 나타났습니다.
       </p>
+      <figure class="case-illustration" aria-labelledby="plan-flow-title">
+        <figcaption id="plan-flow-title">계획을 자동으로 만들면서 현장 조정을 유지하는 흐름</figcaption>
+        <div class="case-sequence">
+          <div><span>01</span><strong>정책에 따라 생성</strong><small>근무유형·휴게시간·휴일을 반영</small></div>
+          <div><span>02</span><strong>담당자가 직접 조정</strong><small>현장 상황에 맞게 특정 날짜 수정</small></div>
+          <div><span>03</span><strong>배치 재실행</strong><small>수동 수정 내용이 덮어쓰이지 않도록 보호</small></div>
+        </div>
+      </figure>
     </section>
 
     <section class="case-section">

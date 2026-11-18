@@ -32,6 +32,14 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
       <h2>01. 문제 — 마감 값과 원천 변경의 충돌</h2>
       <p>월 단위 근태를 마감한 이후에도 출퇴근 기록·휴가·출장·근무계획 같은 원천 데이터가 변경될 수 있습니다. 무조건 자동 재집계하면 마감 결과를 의도치 않게 바꿀 수 있고, 변경을 무시하면 원천 기록과 집계 결과가 어긋날 수 있습니다.</p>
       <p>따라서 <strong>변경을 찾아내는 단계</strong>와 <strong>담당자가 확인하고 필요한 날짜만 적용하는 단계</strong>를 분리했습니다.</p>
+      <figure class="case-illustration" aria-labelledby="closing-title">
+        <figcaption id="closing-title">마감 뒤 변경이 발견됐을 때</figcaption>
+        <div class="case-sequence">
+          <div><span>01</span><strong>원천 데이터 변경</strong><small>출퇴근·휴가·출장·근무계획</small></div>
+          <div><span>02</span><strong>담당자가 변경 확인</strong><small>변경된 날짜와 사유를 검토</small></div>
+          <div><span>03</span><strong>선택 날짜 반영</strong><small>재집계 후 월집계 갱신</small></div>
+        </div>
+      </figure>
     </section>
 
     <section class="case-section">
