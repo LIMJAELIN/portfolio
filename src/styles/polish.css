@@ -255,7 +255,7 @@
 
 .project-row {
   display: grid;
-  grid-template-columns: 42px minmax(0, 1fr) 24px;
+  grid-template-columns: minmax(0, 1fr) 24px;
   gap: 16px;
   padding: 22px 0;
   border-bottom: 1px solid #e9edf2;
@@ -515,7 +515,7 @@
   }
 
   .project-row {
-    grid-template-columns: 30px minmax(0, 1fr) 18px;
+    grid-template-columns: minmax(0, 1fr) 18px;
     gap: 10px;
   }
 

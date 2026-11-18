@@ -25,15 +25,16 @@ const skillGroups = [
 const productionCases = [
   {
     index: '01',
-    type: 'Performance',
+    type: '성능 개선',
     title: '사원등록 초기 로딩 성능 개선',
     summary: '10개가 넘는 하위 탭을 가진 화면에서 최초 진입에 필요하지 않은 초기화와 조회를 실제 사용 시점으로 지연해 초기 경로를 단순화했습니다.',
-    evidence: ['지연 로딩', '화면–API 호출 흐름 분석', 'Production'],
+    evidence: ['지연 로딩', '화면–API 호출 흐름 분석', '실무 시스템'],
     href: `${base}/cases/employee-loading-performance/`,
   },
   {
     index: '02',
-    type: 'Business Logic',
+    featured: true,
+    type: '근무 규칙',
     title: '복잡한 근무정책을 일자별 근무계획으로 변환',
     summary: '근무유형별 시간·교대 규칙과 여러 휴게시간 입력 경로를 하나의 생성 흐름에서 처리하고 자정 경계·비근무일 예외조건을 보완했습니다.',
     evidence: ['5개 근무유형', '3개 휴게시간 소스', '날짜 경계 / 정합성'],
@@ -41,7 +42,7 @@ const productionCases = [
   },
   {
     index: '03',
-    type: 'Transaction / Batch',
+    type: '배치 처리',
     title: '재집계 배치의 대상 선별과 부분 실패 격리',
     summary: '출퇴근 기록 등이 바뀌면 해당 날짜의 근태를 다시 계산하고, 한 건이 실패해도 나머지 처리가 계속되도록 구성했습니다.',
     evidence: ['REQUIRES_NEW', '부분 실패 격리', '재처리 / 실패 집계'],
@@ -49,15 +50,16 @@ const productionCases = [
   },
   {
     index: '04',
-    type: 'Spring / Database',
+    type: '데이터베이스 연결',
     title: 'Multi DataSource Routing',
-    summary: '회사 코드를 routing key로 사용해 3개 DB 환경 중 대상을 동적으로 선택하고 transaction과 실제 Connection 획득 시점의 관계까지 고려했습니다.',
+    summary: '회사마다 다른 데이터베이스를 사용하는 환경에서 회사에 맞는 DB를 선택하고, 실제 연결 시점과 트랜잭션 순서까지 고려했습니다.',
     evidence: ['3 DataSources', 'LazyConnectionDataSourceProxy', 'HikariCP'],
     href: `${base}/cases/multi-datasource-routing/`,
   },
   {
     index: '05',
-    type: 'Business Workflow',
+    featured: true,
+    type: '마감·재집계',
     stage: '회사 업무',
     title: '월근태 마감 후 변경 감지와 선택 재집계',
     summary: '한 달의 근태를 확정한 뒤 출퇴근·휴가 등의 기록이 바뀌면 담당자가 확인하고 필요한 날짜만 다시 계산할 수 있도록 했습니다.',
@@ -66,7 +68,8 @@ const productionCases = [
   },
   {
     index: '06',
-    type: 'System Integration',
+    featured: true,
+    type: '외부 연동',
     stage: '회사 업무',
     title: 'Windows 근태 수집 앱과 ERP 연동',
     summary: '출입 장비의 기록을 Windows 수집 프로그램에서 읽어 서버로 보내고, ERP에서 사용할 수 있도록 연결했습니다.',
@@ -77,7 +80,7 @@ const productionCases = [
 
 const moreExperience = [
   {
-    title: 'ERP Dashboard · Vue 3 / TypeScript',
+    title: '근태 일정 화면 개선',
     description: '근태 일정 위젯을 구현하고 화면의 조회 조건부터 Spring Service 분기와 MyBatis 조회 SQL까지 한 흐름으로 수정했습니다.',
   },
   {
@@ -85,11 +88,11 @@ const moreExperience = [
     description: '미출근·미퇴근 알림의 대기·발송중·성공·실패 상태를 분리하고 실패 대상 재처리와 중복 생성을 방지했습니다.',
   },
   {
-    title: 'eSign Integration & UI State',
+    title: '전자계약 연동',
     description: 'ERP에서 사원 정보를 전자계약 서비스로 보내 계약을 만들고, 계약 상태와 PDF를 조회할 수 있도록 연결했습니다.',
   },
   {
-    title: 'StockDataController',
+    title: '투자 데이터 수집 기능',
     description: '금융 API 기반 실시간 데이터 수집, 호출 제한·시장시간 처리와 비동기 처리 및 성능 개선 영역을 담당했습니다.',
   },
 ];
@@ -132,15 +135,14 @@ const moreExperience = [
       </section>
       <section class="resume-section" id="projects">
         <div class="resume-section-head">
-          <p class="section-label">SELECTED PRODUCTION WORK</p>
+          <p class="section-label">그 밖의 업무 사례</p>
         </div>
 
         <div class="project-list">
-          {productionCases.map((item) => (
+          {productionCases.filter((item) => !item.featured).map((item) => (
             <a class="project-row" href={item.href}>
-              <div class="project-number">{item.index}</div>
               <div class="project-content">
-                <div class="project-eyebrow">{item.type} · {item.stage || 'Production'}</div>
+                <div class="project-eyebrow">{item.type} · {item.stage || '회사 업무'}</div>
                 <h2>{item.title}</h2>
                 <p>{item.summary}</p>
                 <div class="project-tags">{item.evidence.map((tag) => <span>{tag}</span>)}</div>
@@ -153,7 +155,7 @@ const moreExperience = [
 
       <section class="resume-section" id="personal-projects">
         <div class="resume-section-head">
-          <p class="section-label">PERSONAL PROJECT</p>
+          <p class="section-label">개인 프로젝트</p>
         </div>
 
         <article class="flat-project">
@@ -190,11 +192,11 @@ const moreExperience = [
         <article class="flat-project">
           <div class="flat-project-head">
             <div>
-              <p class="project-eyebrow">2026.02 시작 · Legacy / Previous Operations</p>
+              <p class="project-eyebrow">2026.02 시작 · 이전 개인 프로젝트</p>
               <h2>Stock-manager (이전 프로젝트)</h2>
               <p class="project-subtitle">StratDock 이전 투자 데이터 프로젝트의 클라우드 배포·장애 대응</p>
             </div>
-            <a href={`${base}/cases/stock-manager-production/`}>Detailed case ↗</a>
+            <a href={`${base}/cases/stock-manager-production/`}>배포 사례 보기 ↗</a>
           </div>
           <ul class="career-highlights compact">
             <li>Windows 기반 분석 프로토타입을 Docker·PostgreSQL 환경으로 재설계하고 AWS ECS/Fargate·ECR·RDS로 이전</li>
@@ -243,7 +245,7 @@ const moreExperience = [
 
       <section class="resume-section">
         <div class="resume-section-head">
-          <p class="section-label">OTHER EXPERIENCE</p>
+          <p class="section-label">그 밖의 업무 경험</p>
         </div>
         <div class="other-experience-list">
           {moreExperience.map((item) => (
@@ -256,7 +258,7 @@ const moreExperience = [
       </section>
 
       <section class="resume-section education-resume">
-        <div class="resume-section-head"><p class="section-label">EDUCATION</p></div>
+        <div class="resume-section-head"><p class="section-label">학력</p></div>
         <div class="education-row">
           <span>재학 중</span>
           <div>
