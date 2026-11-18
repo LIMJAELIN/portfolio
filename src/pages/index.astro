@@ -6,22 +6,18 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const skillGroups = [
   {
     title: '백엔드',
-    context: 'ERP 개발',
     items: ['Java 8', 'Spring Boot', 'Spring MVC', 'Spring Transaction', 'MyBatis', 'Spring Scheduler'],
   },
   {
     title: '데이터베이스·연동',
-    context: '업무 및 개인 프로젝트',
-    items: ['Oracle', 'PostgreSQL', 'SQL', 'REST API', 'HikariCP', 'Multi DataSource'],
+    items: ['Oracle', 'PostgreSQL', 'SQL', 'REST API', 'HikariCP'],
   },
   {
     title: '클라우드·배포',
-    context: '개인 프로젝트',
     items: ['Docker', 'Docker Compose', 'AWS ECS/Fargate', 'ECR', 'RDS', 'SSM', 'CloudWatch', 'GitHub Actions'],
   },
   {
     title: '학습 및 개인 프로젝트',
-    context: 'Java·Spring 실습 및 관제 앱',
     items: ['Java 21 / 25', 'Spring Boot 4', 'Spring Data JPA', 'Hibernate', 'JDBC', 'PostgreSQL'],
   },
 ];
@@ -135,7 +131,6 @@ const moreExperience = [
             <div class="skill-row">
               <div class="skill-title">
                 <h2>{group.title}</h2>
-                <p>{group.context}</p>
               </div>
               <p class="skill-items">{group.items.join(' · ')}</p>
             </div>
