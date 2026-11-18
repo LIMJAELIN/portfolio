@@ -1,0 +1,66 @@
+---
+import SiteLayout from '../../layouts/SiteLayout.astro';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
+<SiteLayout
+  title="Windows 근태 수집 앱과 ERP 시스템 연동 | 임재린"
+  description="Windows 근태 수집 앱의 외부 DB 연결, SQLite 동기화, 시간대 오류 진단, 별도 서버와 ERP의 데이터 계약 연계 사례입니다."
+>
+  <header class="case-hero">
+    <div class="shell">
+      <div class="breadcrumb"><a href={`${base}/#projects`}>Cases</a> &nbsp;/&nbsp; 06. 근태 수집 시스템 연동</div>
+      <div class="case-hero-grid">
+        <div>
+          <p class="eyebrow">Case 06 · Company Work · Integration / Windows</p>
+          <h1>고객사 근태 데이터를 Windows 앱부터 ERP까지 연결하기</h1>
+          <p class="case-lead">외부 장비의 데이터베이스, Windows 프로그램, 별도 수집 서버, ERP가 각기 다른 환경에서 동작하는 데이터 연동 사례입니다.</p>
+        </div>
+        <dl class="case-facts">
+          <div><dt>Role</dt><dd>ERP / Integration</dd></div>
+          <div><dt>Client</dt><dd>Electron / Node.js</dd></div>
+          <div><dt>Data</dt><dd>PostgreSQL / SQLite</dd></div>
+          <div><dt>Server</dt><dd>Spring Boot / MyBatis</dd></div>
+        </dl>
+      </div>
+    </div>
+  </header>
+
+  <article class="case-body">
+    <section class="case-section">
+      <h2>01. 시스템 경계</h2>
+      <div class="flow" aria-label="근태 데이터 흐름">
+        <div class="flow-step">외부 장비 DB</div>
+        <div class="flow-step">Windows 수집 앱</div>
+        <div class="flow-step">수집·정규화 서버</div>
+        <div class="flow-step emphasis">ERP 연계</div>
+      </div>
+      <p>Windows 근태 수집 프로그램은 외부 장비 DB를 조회한 뒤 로컬 SQLite에 저장하고 별도 서버로 이벤트를 전송합니다. 서버는 이벤트를 정규화하여 ERP가 조회할 수 있게 제공합니다. <strong>전체 아키텍처를 처음부터 단독으로 설계한 경험으로 소개하지는 않습니다.</strong></p>
+    </section>
+
+    <section class="case-section">
+      <h2>02. 직접 구현·수정한 작업</h2>
+      <ul>
+        <li>외부 PostgreSQL 근태 이벤트 조회 및 로컬 SQLite 동기화·서버 전송 경로 구현</li>
+        <li>원본 시각 문자열을 KST 기준으로 해석해 UTC로 변환하고 형식 검증과 테스트 보강</li>
+        <li>고객사 Windows PC에서 32비트 ODBC·Access DB 연결 문제를 파악할 수 있는 드라이버 확인 및 데이터 미리보기 기능 구현</li>
+        <li>Windows 설치형 패키지, 기존 로컬 설정·DB 이전과 업데이트 처리 기능 추가</li>
+        <li>별도 Spring 기반 수집 서버의 이벤트 분류 결과를 ERP 조회·매핑 경로와 연결</li>
+      </ul>
+    </section>
+
+    <section class="case-section">
+      <h2>03. 중요한 기술적 경계</h2>
+      <p>수집 서버가 이벤트를 받았다는 것과 ERP의 후속 집계가 끝났다는 것은 서로 다른 상태입니다. 또한 원본 장비의 지역 시각과 서버가 수신한 시각을 혼동하면 날짜 경계가 달라질 수 있으므로 형식·시간대 처리를 명시했습니다.</p>
+      <p>Windows 앱의 자동 업데이트 기능은 구현했지만, 클라이언트 배포를 Jenkins 기반 CI/CD로 자동화했다고 주장하지 않습니다. 별도 서버 전체의 신규 설계·운영 또한 본인 기여 범위에 포함하지 않습니다.</p>
+    </section>
+
+    <section class="case-section">
+      <div class="result-panel">
+        <strong>검증된 범위와 남은 확인</strong>
+        <p>Git 이력에서 클라이언트 연동·시간 변환·진단 도구·설치 개선 및 ERP 계약 변경이 확인됩니다. 고객사 사용 보고는 있었으나, 처리량·가동률·오류 감소 효과는 독립 검증되지 않아 수치로 제시하지 않습니다.</p>
+      </div>
+    </section>
+  </article>
+</SiteLayout>
