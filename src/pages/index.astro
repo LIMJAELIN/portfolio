@@ -43,7 +43,7 @@ const productionCases = [
     index: '03',
     type: 'Transaction / Batch',
     title: '재집계 배치의 대상 선별과 부분 실패 격리',
-    summary: '원천 데이터 변경 여부로 재집계 대상을 선별하고 처리 단위를 REQUIRES_NEW로 분리해 한 건의 오류가 전체 배치로 번지지 않도록 구성했습니다.',
+    summary: '출퇴근 기록 등이 바뀌면 해당 날짜의 근태를 다시 계산하고, 한 건이 실패해도 나머지 처리가 계속되도록 구성했습니다.',
     evidence: ['REQUIRES_NEW', '부분 실패 격리', '재처리 / 실패 집계'],
     href: `${base}/cases/batch-partial-failure/`,
   },
@@ -60,8 +60,8 @@ const productionCases = [
     type: 'Business Workflow',
     stage: '회사 업무',
     title: '월근태 마감 후 변경 감지와 선택 재집계',
-    summary: '마감된 근태에서 4종 원천 변경을 감지·확인하고 데이터 잠금과 선택 날짜 재집계 흐름을 Spring/MyBatis로 구현했습니다.',
-    evidence: ['4종 원천 변경 감지', 'FOR UPDATE', '마감 상태 / 정합성'],
+    summary: '한 달의 근태를 확정한 뒤 출퇴근·휴가 등의 기록이 바뀌면 담당자가 확인하고 필요한 날짜만 다시 계산할 수 있도록 했습니다.',
+    evidence: ['근태 기록 변경 확인', 'FOR UPDATE', '선택 날짜 재집계'],
     href: `${base}/cases/month-close-rebuild/`,
   },
   {
@@ -69,7 +69,7 @@ const productionCases = [
     type: 'System Integration',
     stage: '회사 업무',
     title: 'Windows 근태 수집 앱과 ERP 연동',
-    summary: '외부 장비 DB 조회, 로컬 SQLite 동기화, 시간대 오류 수정과 별도 Spring 서버·ERP 데이터 계약 변경에 기여했습니다.',
+    summary: '출입 장비의 기록을 Windows 수집 프로그램에서 읽어 서버로 보내고, ERP에서 사용할 수 있도록 연결했습니다.',
     evidence: ['Electron / Node.js', 'PostgreSQL / SQLite', '시간대 / API 계약'],
     href: `${base}/cases/attendance-integration/`,
   },
@@ -86,7 +86,7 @@ const moreExperience = [
   },
   {
     title: 'eSign Integration & UI State',
-    description: '계약 생성·외부 식별자·상태·PDF 조회를 연계하고 재조회 후 선택 행이 어긋나는 문제를 업무 식별 키 기반 복원으로 수정했습니다.',
+    description: 'ERP에서 사원 정보를 전자계약 서비스로 보내 계약을 만들고, 계약 상태와 PDF를 조회할 수 있도록 연결했습니다.',
   },
   {
     title: 'StockDataController',
@@ -103,7 +103,7 @@ const moreExperience = [
       <h1>임재린</h1>
       <p class="intro-meta">2024.02 — 현재 · Java / Spring · Oracle</p>
       <p class="intro-lead">업무의 규칙과 데이터 흐름을<br />함께 살피며 개발합니다.</p>
-      <p class="intro-body">인사·근태·급여 ERP에서 근무정책과 재집계, 외부 시스템 연동을 개발합니다. 개인 프로젝트에서는 읽기 전용 관제 앱과 AWS 배포·장애 대응을 경험했습니다.</p>
+      <p class="intro-body">직원의 근무계획, 출퇴근 기록, 급여 등을 관리하는 ERP를 개발합니다. 개인 프로젝트에서는 투자 전략을 살펴보는 화면과 AWS 배포·장애 대응을 경험했습니다.</p>
       <div class="intro-links">
         <a href="mailto:imjaelin@gmail.com">imjaelin@gmail.com</a>
         <a href="https://github.com/LIMJAELIN" target="_blank" rel="noreferrer">github.com/LIMJAELIN ↗</a>
@@ -118,7 +118,7 @@ const moreExperience = [
         <p class="featured-intro">현장의 요구사항을 업무 규칙과 데이터 처리로 연결한 사례입니다.</p>
         <div class="featured-grid">
           <a href={`${base}/cases/work-schedule-policy/`}><span>근무정책</span><strong>{productionCases[1].title}</strong><p>근무유형별 계획을 만들면서 담당자가 조정한 내용을 배치에서 보호했습니다.</p><b>근무계획 사례 보기 ↗</b></a>
-          <a href={`${base}/cases/month-close-rebuild/`}><span>마감과 재집계</span><strong>{productionCases[4].title}</strong><p>원천 데이터 변경을 확인하고 담당자가 선택한 날짜의 재집계를 연결했습니다.</p><b>월근태 사례 보기 ↗</b></a>
+          <a href={`${base}/cases/month-close-rebuild/`}><span>마감과 재집계</span><strong>{productionCases[4].title}</strong><p>한 달의 근태를 확정한 뒤 기록이 바뀌면 필요한 날짜만 다시 계산할 수 있도록 했습니다.</p><b>월근태 사례 보기 ↗</b></a>
           <a href={`${base}/cases/attendance-integration/`}><span>외부 연동</span><strong>{productionCases[5].title}</strong><p>Windows 수집 앱의 조회·동기화·전송과 ERP 연동을 다뤘습니다.</p><b>근태 연동 사례 보기 ↗</b></a>
         </div>
       </section>
@@ -153,7 +153,7 @@ const moreExperience = [
           <ul class="career-highlights">
             <li>인사·근태·급여 ERP에서 AngularJS 화면부터 Spring API·DB 처리까지 기능 단위 End-to-End 개발</li>
             <li>근무정책·교대·휴일·익일 처리와 계획 변경 후 재계산 등 날짜·상태 기반 업무 규칙 구현</li>
-            <li>월근태 마감 후 4종 원천 변경 감지·확인, 데이터 잠금과 선택 날짜 재집계 흐름 구현</li>
+            <li>한 달의 근태를 확정한 뒤 출퇴근·휴가 등의 기록이 바뀌면 확인하고 다시 계산하는 기능 개발</li>
             <li>Spring Transaction / Scheduler 기반 배치, 부분 실패 격리와 재처리 흐름 개발</li>
             <li>외부 전자계약 REST API 6종 연동 및 회사별 Multi DataSource 환경 구성</li>
             <li>Electron 기반 Windows 근태 수집 앱의 외부 DB 연동·SQLite 동기화·시간대 오류 및 고객 환경 연결 문제 대응</li>
@@ -195,12 +195,13 @@ const moreExperience = [
             <div>
               <p class="project-eyebrow">2026 — Present · Personal / Research</p>
               <h2>StratDock</h2>
-              <p class="project-subtitle">전략 신호 검증·오프라인 GHOST 가상 원장·상태 복원</p>
+              <p class="project-subtitle">투자 방법을 연구하고 과거 데이터와 가상 매매로 검토하는 개인 프로젝트</p>
             </div>
           </div>
           <ul class="career-highlights compact">
-            <li>동결된 신호 계약을 기반으로 이벤트 중복·시간 역행·출처 불일치와 저장 상태 복원 조건을 검증</li>
-            <li>연구 및 가상 실행 경로를 개발·검증 중이며 PAPER/LIVE 주문과 브로커 연결은 비활성</li>
+            <li>투자 판단에 사용하는 자료의 형식과 출처를 확인하고, 같은 기록의 중복 처리나 시간 순서 오류를 막는 기능 개발</li>
+            <li>실제 돈을 쓰지 않는 가상 매매 기록을 저장하고 중단 후 다시 불러오는 흐름을 개발·검증 중</li>
+            <li>투자 방법을 연구하는 단계로, 실제 증권사 주문과 계좌 연결은 사용하지 않음</li>
           </ul>
           <p class="stack-line"><strong>Stack</strong> Python · PostgreSQL · QuantConnect · pytest · GitHub Actions</p>
         </article>
@@ -210,12 +211,12 @@ const moreExperience = [
             <div>
               <p class="project-eyebrow">2026 — Present · Personal / Java Backend</p>
               <h2>StratDock-Observatory</h2>
-              <p class="project-subtitle">Java/Spring 기반 읽기 전용 관제 앱과 응답 계약 검증</p>
+              <p class="project-subtitle">투자 연구 시스템의 실행 기록을 한눈에 살펴보는 별도 웹 애플리케이션</p>
             </div>
           </div>
           <ul class="career-highlights compact">
-            <li>별도 읽기 전용 DB 연결, 응답 상태·필드 검증과 React 관제 UI 구성</li>
-            <li>합성 데이터를 이용해 PostgreSQL → Spring API → 웹 화면의 연동 흐름 검증</li>
+            <li>연구 시스템의 원본을 바꾸지 않고 기록을 확인할 수 있도록 읽기 전용 DB 연결과 화면 개발</li>
+            <li>실행 기록과 실제 프로그램 실행 여부를 구분하고, 테스트용 데이터로 DB부터 화면까지 연동 확인</li>
           </ul>
           <p class="stack-line"><strong>Stack</strong> Java · Spring Boot · JDBC · PostgreSQL · React · TypeScript</p>
         </article>

@@ -16,7 +16,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
           <p class="eyebrow">Case 07 · Personal Project · System / Operations</p>
           <h1>Stock-manager 클라우드 배포·장애 대응</h1>
           <p class="case-lead">
-            Stock-manager는 현재 StratDock으로 개발 중심을 옮긴 이전 개인 프로젝트입니다. 금융 데이터 수집과 주문 관련 상태·리스크 경계를 분리하는 구조를 구현했습니다.
+            Stock-manager는 주식 시세와 뉴스를 수집·분석하고 투자 아이디어를 시험하던 이전 개인 프로젝트입니다. 이후 투자 전략 연구는 StratDock으로 이어졌습니다.
             Docker/AWS 배포 과정의 기동·DB 장애와 실패조건을 추적해 복구 기준을 보완했습니다. 주문 관련 상태는 가상 시나리오를 중심으로 검증했습니다.
           </p>
         </div>
@@ -151,7 +151,7 @@ pytest tests/test_runtime_entry_guard.py -k "risk or guard or halt"
       <h2>06. 전략 결과도 시스템의 출력으로 봤습니다</h2>
       <p>
         프로젝트 후반에는 “전략 결과가 나왔다”와 “그 결과를 믿어도 된다”를 분리했습니다.
-        데이터 시점, 보유기간, 실행 기준, 평가 원장이 맞지 않으면 성과 계산 자체를 막고,
+        데이터 시점, 보유기간, 실행 기준, 거래 기록이 맞지 않으면 성과 계산 자체를 막고,
         이미 계산한 결과라도 입력 근거에 문제가 발견되면 폐기하는 방향으로 평가 구조를 발전시켰습니다.
       </p>
       <div class="hero-actions">
