@@ -5,24 +5,24 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 const skillGroups = [
   {
-    title: 'Core Backend',
-    context: '비즈비 ERP · Production',
+    title: '백엔드',
+    context: 'ERP 개발',
     items: ['Java 8', 'Spring Boot', 'Spring MVC', 'Spring Transaction', 'MyBatis', 'Spring Scheduler'],
   },
   {
-    title: 'Data & Integration',
-    context: 'Production + Personal',
+    title: '데이터베이스·연동',
+    context: '업무 및 개인 프로젝트',
     items: ['Oracle', 'PostgreSQL', 'SQL', 'REST API', 'HikariCP', 'Multi DataSource'],
   },
   {
-    title: 'Cloud & Operations',
-    context: 'Stock-manager · Personal / Operations',
+    title: '클라우드·배포',
+    context: '개인 프로젝트',
     items: ['Docker', 'Docker Compose', 'AWS ECS/Fargate', 'ECR', 'RDS', 'SSM', 'CloudWatch', 'GitHub Actions'],
   },
   {
-    title: 'Modern Java Hands-on',
-    context: 'Backend Engineering Lab · Public',
-    items: ['Java 21 / 25', 'Spring Boot 4', 'Spring Data JPA / Hibernate (Lab)', 'JDBC (Observatory)', 'PostgreSQL', 'GitHub Actions'],
+    title: '학습 및 개인 프로젝트',
+    context: 'Java·Spring 실습 및 관제 앱',
+    items: ['Java 21 / 25', 'Spring Boot 4', 'Spring Data JPA', 'Hibernate', 'JDBC', 'PostgreSQL'],
   },
 ];
 
@@ -128,7 +128,7 @@ const moreExperience = [
       </section>
       <section class="resume-section" id="skills">
         <div class="resume-section-head">
-          <p class="section-label">SKILL</p>
+          <p class="section-label">기술 스택</p>
         </div>
         <div class="skill-matrix">
           {skillGroups.map((group) => (
@@ -246,18 +246,17 @@ const moreExperience = [
 
       <section class="resume-section" id="study">
         <div class="resume-section-head">
-          <p class="section-label">ENGINEERING LAB</p>
-          <span>Public hands-on evidence</span>
+          <p class="section-label">학습 및 실습</p>
         </div>
 
         <article class="flat-project">
           <div class="flat-project-head">
             <div>
-              <p class="project-eyebrow">Java / Spring / JPA · Hands-on</p>
-              <h2>Backend Engineering Lab</h2>
-              <p class="project-subtitle">최신 Java/Spring/JPA 동작을 작은 재현 코드와 테스트로 검증</p>
+              <p class="project-eyebrow">Java · Spring · JPA</p>
+              <h2>백엔드 학습 기록</h2>
+              <p class="project-subtitle">Java와 Spring의 주요 동작을 예제 코드와 테스트로 직접 정리했습니다.</p>
             </div>
-            <a href="https://github.com/LIMJAELIN/backend-engineering-lab" target="_blank" rel="noreferrer">Repository ↗</a>
+            <a href="https://github.com/LIMJAELIN/backend-engineering-lab" target="_blank" rel="noreferrer">학습 저장소 보기 ↗</a>
           </div>
           <p class="lab-topic-line">Persistence Context · Dirty Checking · N+1 / Fetch Join · Optimistic Lock · REQUIRED / REQUIRES_NEW</p>
           <p class="stack-line"><strong>Stack</strong> Java 21 · Spring Boot · Spring Data JPA · Hibernate · PostgreSQL · GitHub Actions</p>
