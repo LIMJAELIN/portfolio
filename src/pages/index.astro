@@ -17,7 +17,7 @@ const skillGroups = [
     items: ['Docker', 'Docker Compose', 'AWS ECS/Fargate', 'ECR', 'RDS', 'SSM', 'CloudWatch', 'GitHub Actions'],
   },
   {
-    title: '학습 및 개인 프로젝트',
+    title: '학습',
     items: ['Java', 'Spring Boot', 'Spring Data JPA', 'Hibernate', 'JDBC', 'PostgreSQL'],
   },
 ];
@@ -45,7 +45,7 @@ const productionCases = [
     type: '배치 처리',
     title: '재집계 배치의 대상 선별과 부분 실패 격리',
     summary: '출퇴근 기록 등이 바뀌면 해당 날짜의 근태를 다시 계산하고, 한 건이 실패해도 나머지 처리가 계속되도록 구성했습니다.',
-    evidence: ['REQUIRES_NEW', '부분 실패 격리', '재처리 / 실패 집계'],
+    evidence: ['대상별 처리·롤백', '실패 건 집계', '수동 재실행'],
     href: `${base}/cases/batch-partial-failure/`,
   },
   {
@@ -53,7 +53,7 @@ const productionCases = [
     type: '데이터베이스 연결',
     title: 'Multi DataSource Routing',
     summary: '회사마다 다른 데이터베이스를 사용하는 환경에서 회사에 맞는 DB를 선택하고, 실제 연결 시점과 트랜잭션 순서까지 고려했습니다.',
-    evidence: ['3 DataSources', 'LazyConnectionDataSourceProxy', 'HikariCP'],
+    evidence: ['회사별 DB 연결', '요청에 맞는 DB 선택', '연결 시점 관리'],
     href: `${base}/cases/multi-datasource-routing/`,
   },
   {
@@ -235,7 +235,7 @@ const moreExperience = [
             </div>
             <a href="https://github.com/LIMJAELIN/backend-engineering-lab" target="_blank" rel="noreferrer">GitHub에서 보기 ↗</a>
           </div>
-          <p class="lab-topic-line">Persistence Context · Dirty Checking · N+1 / Fetch Join · Optimistic Lock · REQUIRED / REQUIRES_NEW</p>
+          <p class="lab-topic-line">데이터 변경 감지 · 조회 성능 · 동시 수정 제어 · 트랜잭션 처리</p>
           <p class="stack-line"><strong>Stack</strong> Java · Spring Boot · Spring Data JPA · Hibernate · PostgreSQL · GitHub Actions</p>
         </article>
       </section>
