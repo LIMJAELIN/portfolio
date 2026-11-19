@@ -57,7 +57,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
     <section class="case-section">
       <h2>03. 트랜잭션 경계 — 재집계 경로에 따라 다름</h2>
-      <p>마감 후 변경 적용 기능과 별도로, 사원·근무일별 대상으로 처리하는 재집계 API에서는 <code>REQUIRES_NEW</code> 트랜잭션을 사용합니다. 각 대상을 성공·건너뜀·실패로 분리해 기록할 수 있지만, <strong>마감 후 선택 적용과 대상별 독립 처리 API는 서로 다른 트랜잭션 경로</strong>입니다.</p>
+      <p>마감 후 변경 적용 기능과 별도로, 사원·근무일별 재집계 API는 대상을 각각 처리합니다. 각 대상을 성공·건너뜀·실패로 분리해 기록할 수 있지만, <strong>마감 후 선택 적용과 대상별 독립 처리 API는 서로 다른 트랜잭션 경로</strong>입니다.</p>
     </section>
   </article>
 </SiteLayout>

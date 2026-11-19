@@ -89,7 +89,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     <section class="case-section">
       <h2>04. Connection을 실제 SQL 시점까지 늦췄습니다</h2>
       <p>
-        <strong>LazyConnectionDataSourceProxy</strong>를 사용해 트랜잭션 경계가 만들어졌다는 이유만으로 즉시 물리 Connection을 확보하지 않고,
+        LazyConnectionDataSourceProxy를 사용해 트랜잭션 경계가 만들어졌다는 이유만으로 즉시 물리 Connection을 확보하지 않고,
         실제 SQL이 필요한 시점까지 획득을 늦췄습니다.
       </p>
       <p>
